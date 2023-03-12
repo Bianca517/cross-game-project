@@ -1,0 +1,46 @@
+.card{
+    border: none;
+    width: 17%;
+    padding: 40px;
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    transform: translate(-50%, -50%);
+    background: #ffff;
+}
+
+.card h1 {
+    color: black;
+    text-align: center;
+}
+
+label {
+    color: black;
+    margin-left: 2%;
+}
+
+button{
+    position: absolute;
+    top: 85%;
+    left: 45%;
+    width: 60px;
+    height: 25px;
+    border-style: ridge;
+    background-color: #085711;
+    border-radius: 5px;
+}
+
+.text{
+    position: absolute;
+    left: 10%;
+    right: 0%;
+    top: 40%;
+    bottom: 0%;
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 120%;
+    letter-spacing: -0.015em;
+    color: white;
+}
