@@ -1,0 +1,6 @@
+.content-body{
+    min-height: 100%;
+    padding: 100% 1rem;
+    display: block;
+    background-color: bisque;
+}
