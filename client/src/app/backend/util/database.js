@@ -1,8 +1,8 @@
 //config -> config.js is database configuration
-const mysql = require("mysql2");
+const mysql = require('mysql2');
 
 //this is separated so u can git ignore the config file
-const config = require("../config/config.json");
+const config = require('../config/config.json');
 
 //create a creation port to which we constanlty listen to requests from sql and node
 const pool = mysql.createPool({
@@ -12,4 +12,4 @@ const pool = mysql.createPool({
   password: config.password,
 });
 
-module.export = pool.promise();
+module.exports = pool.promise();
