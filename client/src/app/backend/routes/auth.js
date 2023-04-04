@@ -14,6 +14,8 @@ const User = require('../models/user');
 
 const authController = require('../controllers/auth');
 
+console.log("here2");
+
 router.post(
   '/signup',
   [
@@ -24,7 +26,7 @@ router.post(
       .withMessage('Please enter a valid email.')
       .custom(async (email) => {
         const user = await User.find(email);
-        if (user[0].length > 0) {
+        if (user[0].length() > 0) {
           return Promise.reject('Email address already exists!');
         }
       })

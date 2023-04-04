@@ -39,5 +39,6 @@ app.use(errorController.get404);
 
 app.use(errorController.get500);
 
+console.log("here1")
 //listen to the port
 app.listen(ports, () => console.log(`Listening on port ${ports}`));
