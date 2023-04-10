@@ -12,13 +12,15 @@ import {MatCardModule} from '@angular/material/card';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { SignupComponent } from './signup/signup.component';
 import { StartComponent } from './start/start.component';
+import { GameComponent } from './game/game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SignupComponent,
-    StartComponent
+    StartComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,
