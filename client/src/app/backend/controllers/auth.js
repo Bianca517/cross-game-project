@@ -6,11 +6,9 @@ const User = require('../models/user');
 
 exports.signup = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log("here3");
   //if there are errors
-  if (!(errors.isEmpty())) return;
-
-  console.log("here4");
+  //if (errors.isEmpty()) return;
+  console.log("req " + JSON.stringify(req.body));
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
@@ -19,16 +17,21 @@ exports.signup = async (req, res, next) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const userDetails = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: hashedPassword,
-    };
+    const userDetails = new User(
+      firstName,
+      lastName,
+      email,
+      hashedPassword);
 
-    const result = await User.save(userDetails);
+    try {
+      const result = await User.find(email);
+      User.save(userDetails);
+      res.status(201).json({ message: "User registered!" });
+    }
+    catch(err) {
+      res.status(405).json({ message: err.message });
+    }
 
-    res.status(201).json({ message: "User registered!" });
   } catch (err) {
     //handle
     if (!err.statusCode) {

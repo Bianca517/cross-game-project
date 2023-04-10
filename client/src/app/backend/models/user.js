@@ -9,8 +9,13 @@ module.exports = class User {
     //this.gamesWon = 0;
   }
 
-  static find(email) {
-    return db.execute('SELECT * FROM users WHERE email = ?', [email]);
+  static async find(email) {
+    //need to use await for db operations, otherwise => undefined
+    const result = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+
+    if (result[0].length > 0) {
+      return Promise.reject(new Error('Email address already exists!'));
+    }
   }
 
   static save(user) {

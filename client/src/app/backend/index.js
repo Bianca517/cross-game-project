@@ -16,6 +16,7 @@ const app = express();
 //SERVER OR LOCAL
 const ports = process.env.PORT || 3000;
 
+app.use(express.json());
 app.use(bodyParser.json());
 
 //allow access to different pages and operalization

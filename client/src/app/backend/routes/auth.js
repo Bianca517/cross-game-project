@@ -14,21 +14,16 @@ const User = require('../models/user');
 
 const authController = require('../controllers/auth');
 
-console.log("here2");
-
 router.post(
   '/signup',
   [
-    body('firstName').trim().not().isEmpty(),
-    body('lastName').trim().not().isEmpty(),
+    body('firstName').trim(),
+    body('lastName').trim(),
     body('email')
       .isEmail()
       .withMessage('Please enter a valid email.')
       .custom(async (email) => {
-        const user = await User.find(email);
-        if (user[0].length() > 0) {
-          return Promise.reject('Email address already exists!');
-        }
+        //const user = await User.find(email);
       })
       .normalizeEmail(),
     body('password').trim().isLength({ min: 7 }),
