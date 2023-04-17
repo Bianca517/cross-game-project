@@ -13,6 +13,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { SignupComponent } from './signup/signup.component';
 import { StartComponent } from './start/start.component';
 import { GameComponent } from './game/game.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,7 @@ import { GameComponent } from './game/game.component';
     LoginComponent,
     SignupComponent,
     StartComponent,
-    GameComponent
+    GameComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,7 +33,10 @@ import { GameComponent } from './game/game.component';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    MatToolbarModule
+    MatToolbarModule,
+    HttpClientModule,
+    FormsModule,
+    CommonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

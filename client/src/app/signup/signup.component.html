@@ -10,25 +10,25 @@
                 <div class="text-center">
                     <h1>Sign up for an account</h1> 
                 </div>
-                    <form>
+                    <form #loginForm="ngForm" id="signUpForm">
                         <div class="mb-3">
-                          <input type="text" class="form-control" id="firstName" aria-describedby="FirstName" placeholder="First name">
+                          <input type="text" class="form-control" id="firstName" name ="firstName" aria-describedby="FirstName" placeholder="First name" [(ngModel)]="firstName">
                         </div>
                         <div class="mb-3">
                             <br>
-                            <input type="text" class="form-control" id="lastName" aria-describedby="LastName" placeholder="Last name">
+                            <input type="text" class="form-control" id="lastName" name ="lastName" aria-describedby="LastName" placeholder="Last name" [(ngModel)]="lastName">
                         </div>
                         <div class="mb-3">
                             <br>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+                            <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" [(ngModel)]="email" email="true">
                         </div>
                         <div class="mb-3">
                           <br>
-                          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Create password">
+                          <input type="password" class="form-control" id="exampleInputPassword1" name ="password" placeholder="Create password" [(ngModel)]="password">
                         </div>
                         <br>
                         <br>
-                        <button type="submit" class="btn btn-primary" routerLink="/start">Register</button>
+                        <button type="button" class="btn btn-primary" (click)="signupUser()">Register</button>
                       </form>
                       <a routerLink="/login">Already registered? Click to Login!</a>
             </div>
