@@ -1,20 +1,18 @@
-const express = require('express');
+import express from 'express';
 
 //this is where we do validation
 //server needs to validate that an email exists
 
-const { body } = require('express-validator');
+import { body } from 'express-validator';
 //this intercepts the body(fields you sent thru the server) and validate it to go to the next route
 //server side validation for the input
 
 //this allows to make requests from another location
-const router = express.Router();
+const signUpRouter = express.Router();
 
-const User = require('../models/user');
+import { signupController } from '../controllers/auth';
 
-const authController = require('../controllers/auth');
-
-router.post(
+signUpRouter.post(
   '/signup',
   [
     body('firstName').trim(),
@@ -28,7 +26,7 @@ router.post(
       .normalizeEmail(),
     body('password').trim().isLength({ min: 7 }),
   ],
-  authController.signup
+  signupController
 );
 
-module.exports = router;
+export default signUpRouter;

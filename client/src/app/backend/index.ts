@@ -1,12 +1,13 @@
 //create our server
-const express = require('express');
+import express from 'express';
 
 //pass our json request
-const bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 
-const authRoutes = require('./routes/auth');
+import signUpRouter from "./routes/auth";
+import { Request, Response, NextFunction } from 'express';
 
-const errorController = require('./controllers/error');
+import { errorController } from './controllers/error';
 
 //create our application
 //its gonna be an express method
@@ -14,13 +15,13 @@ const app = express();
 
 //create a port
 //SERVER OR LOCAL
-const ports = process.env.PORT || 3000;
+const ports = process.env['PORT'] || 3000;
 
 app.use(express.json());
 app.use(bodyParser.json());
 
 //allow access to different pages and operalization
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   //any location can request thru API
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -34,12 +35,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/auth', authRoutes);
+app.use('/auth', signUpRouter);
 
-app.use(errorController.get404);
+if (errorController.get404) {
+  app.use(errorController.get404);
+}
 
-app.use(errorController.get500);
+if (errorController.get500) {
+  app.use(errorController.get500);
+}
 
-console.log("here1")
 //listen to the port
 app.listen(ports, () => console.log(`Listening on port ${ports}`));

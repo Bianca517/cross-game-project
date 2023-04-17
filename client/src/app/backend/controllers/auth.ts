@@ -1,10 +1,12 @@
-const { validationResult } = require('express-validator');
+import { validationResult } from 'express-validator';
+import { Request, Response, NextFunction } from 'express';
 
-const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
 
-const User = require('../models/user');
+import { User } from '../models/user';
+import { UserRepository } from '../models/user-repository'
 
-exports.signup = async (req, res, next) => {
+export const signupController = async (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   //if there are errors
   //if (errors.isEmpty()) return;
@@ -23,13 +25,14 @@ exports.signup = async (req, res, next) => {
       email,
       hashedPassword);
 
+    
     try {
-      const result = await User.find(email);
-      User.save(userDetails);
+      const result = await UserRepository.findUserByEmail(email);
+      UserRepository.saveUser(userDetails);
       res.status(201).json({ message: "User registered!" });
     }
-    catch(err) {
-      res.status(405).json({ message: err.message });
+    catch(errorMessage) {
+      res.status(409).json({ message: errorMessage });
     }
 
   } catch (err) {
