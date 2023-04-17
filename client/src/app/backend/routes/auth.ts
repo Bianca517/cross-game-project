@@ -10,7 +10,7 @@ import { body } from 'express-validator';
 //this allows to make requests from another location
 const signUpRouter = express.Router();
 
-import { signupController } from '../controllers/auth';
+import { signupController } from '../controllers/signup-controller';
 
 signUpRouter.post(
   '/signup',
@@ -18,13 +18,17 @@ signUpRouter.post(
     body('firstName').trim(),
     body('lastName').trim(),
     body('email')
+      .optional()
       .isEmail()
-      .withMessage('Please enter a valid email.')
+      .withMessage('Please enter a valid email!')
       .custom(async (email) => {
         //const user = await User.find(email);
       })
       .normalizeEmail(),
-    body('password').trim().isLength({ min: 7 }),
+    body('password')
+      .trim()
+      .isLength({ min: 7 })
+      .withMessage('Password must be minimum 7 characters long!'),
   ],
   signupController
 );

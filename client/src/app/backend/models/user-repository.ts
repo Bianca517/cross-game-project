@@ -10,14 +10,17 @@ export class UserRepository {
           );
     }
 
-    static async findUserByEmail(email : String): Promise<string> {
+    static async findUserByEmail(email : String): Promise<User | null> {
         //need to use await for db operations, otherwise => undefined
         const result = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
         const rows = result[0] as RowDataPacket[];
-        
+    
         if (rows.length > 0) {
-            const row = rows[0];
-            return Promise.reject("User already registered!");
+            const user: User = rows[0] as User;
+            return user;
+        }
+        else {
+            return null;
         }
     }
 }

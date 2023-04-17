@@ -13,7 +13,7 @@
                     <form #loginForm="ngForm" id="loginForm">
 
                         <div class="mb-3">
-                          <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" autocomplete="on" [(ngModel)]="email">
+                          <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" autocomplete="on" [(ngModel)]="email" email="true">
                         </div>
                         <br>
                         <div class="mb-3">
@@ -21,7 +21,7 @@
                         </div>
                         <br>
                         <br>
-                        <button type="submit" class="btn btn-primary" (click)="onClick()" id="submitButton" routerLink="/start">Log in</button>
+                        <button type="submit" class="btn btn-primary" (click)="loginUser()" id="submitButton" routerLink="/start">Log in</button>
                       </form>
                     <a routerLink="/signup">New user? Click to register!</a>
             </div>
