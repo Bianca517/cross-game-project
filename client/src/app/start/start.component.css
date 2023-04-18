@@ -14,7 +14,7 @@ button{
 
 button:hover {background-color: rgb(170, 15, 15)}
 
-p{
+p.title{
     position: absolute;
     top: 20%;
     bottom: 0%;
@@ -28,10 +28,84 @@ p{
     color: white;
 }
 
+p.level {
+    position: absolute;
+    top: 70%;
+    bottom: 0%;
+    left: 44%;
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 35px;
+    line-height: 120%;
+    letter-spacing: -0.015em;
+    color: white;
+}
+
 img{
     border-radius: 70%;
-    height: 15%;
-    width: 15%;
+    height: 25%;
+    width: 25%;
     margin-left: 5%;
     margin-top: 25%;
+}
+
+.container {
+    width: 100%;
+}
+
+.progressbar{
+    counter-reset: step;
+}
+.progressbar li {
+    list-style-type: none;
+    float: left;
+    width: 50px;
+    position: relative;
+    text-align: center;
+    color: black;
+    left: 41%;
+}
+
+.progressbar li:before {
+    content: counter(step);
+    counter-increment: step;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border: 3px solid white;
+    display: block;
+    text-align: center;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.progressbar li:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: aliceblue;
+    top: 15px;
+    left: -50%;
+    z-index: -1;
+}
+
+.progressbar li:first-child:after{
+    content: none;
+}
+
+.progressbar li.active {
+    color: black;
+}
+
+.progressbar li.active:before {
+    border-color: rgb(170, 15, 15);
+    background-color: rgb(170, 15, 15);
+    color: white;
+}
+
+.progressbar li.active + li:after {
+    background-color: rgb(170, 15, 15);
 }
