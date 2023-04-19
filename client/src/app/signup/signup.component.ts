@@ -18,6 +18,11 @@ export class SignupComponent implements OnInit {
 
   }
 
+  alert_name:boolean=false;
+  alert_usedemail:boolean=false;
+  alert_invalidemail:boolean=false;
+  alert_registered:boolean = false;
+
   ngOnInit(): void {
       
   }
@@ -33,10 +38,28 @@ export class SignupComponent implements OnInit {
       password: this.password
     }
 
-    return this.signupService.signUpUser(userData)
+      return this.signupService.signUpUser(userData)
       .subscribe((response: any) => {
         console.log(response);
-      });
-    
-  }
+        this.alert_registered = true;
+      },
+      err => { 
+        if (err.status === 409) { //Email already used!
+          this.alert_usedemail = true;
+        } 
+        if (err.status === 400) { //Invalid email format! AND Password must be minimum 7 characters length!
+          this.alert_invalidemail = true;
+        }  
+        if (!this.firstName || !this.lastName) {
+          this.alert_name = true;
+        }
+    });
+}
+
+  closeAlert() {
+    this.alert_usedemail=false;
+    this.alert_invalidemail = false;
+    this.alert_name = false;
+    this.alert_registered = false;
+  };
 }

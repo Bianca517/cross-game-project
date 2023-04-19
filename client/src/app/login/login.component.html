@@ -1,8 +1,16 @@
-  <div class="text">
+<div *ngIf="alert" class="alert">
+  <strong>Invalid email or password! </strong>
+  <button class="close" (click)="closeAlert()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+ <div class="text">
     The largest community of
     <br>
     cross enthusiasts
   </div>
+
   <div class ="container">
     <div class ="row">
         <div class="col-md-6">
@@ -21,7 +29,7 @@
                         </div>
                         <br>
                         <br>
-                        <button type="submit" class="btn btn-primary" (click)="loginUser()" id="submitButton" routerLink="/start">Log in</button>
+                        <button type="button" class="btn btn-primary" (click)="loginUser()" id="submitButton">Log in</button>
                       </form>
                     <a routerLink="/signup">New user? Click to register!</a>
             </div>

@@ -52,7 +52,6 @@ export const signupController = async (req: Request, res: Response, next: NextFu
         else {
           res.status(409).json({ message: "Email already used!" });
         }
-        
       }
       catch(errorMessage) {
         res.status(409).json({ message: errorMessage });

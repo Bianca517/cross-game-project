@@ -16,6 +16,6 @@ export class WebrequestService {
     console.log("WebReq service!");  
     console.log(payload);
     console.log(`${this.ROOT_URL}/${uri}`);
-    return this.http.post(`${this.ROOT_URL}/${uri}`, payload);
+    return this.http.post(`${this.ROOT_URL}/${uri}`, payload, {observe: 'response'});
   }
 }
