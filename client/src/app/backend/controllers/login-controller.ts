@@ -17,7 +17,6 @@ export const loginController = async (req: Request, res: Response, next: NextFun
 
     const result = await UserRepository.findUserByEmail(userEmail);
 
-
     if(result != null) {
         const resultedUser: User = result;
         

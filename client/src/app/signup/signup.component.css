@@ -15,7 +15,7 @@
     margin-top: 0%;
 }
 
-button{
+.btn{
     position: absolute;
     top: 82%;
     left: 45%;
@@ -26,7 +26,7 @@ button{
     border-radius: 5px;
 }
 
-button:hover {background-color: green}
+.btn:hover {background-color: green}
 
 .text{
     position: absolute;
@@ -41,6 +41,94 @@ button:hover {background-color: green}
     line-height: 120%;
     letter-spacing: -0.015em;
     color: white;
+}
+
+.alert{
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    position: absolute;
+    width: 350px;
+    height: 50px;
+    left: 45%;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.green_alert{
+    background-color: #d4edda;
+    position: absolute;
+    width: 350px;
+    height: 50px;
+    left: 45%;
+    text-align: center;
+    border-radius: 5px;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert_text_1{
+    position: absolute;
+    top: 25%;
+    left: 20%;
+    font-size: 16px;
+}
+
+.close{
+    position: absolute;
+    top: 25%;
+    left: 73%;
+    width: 25px;
+    height: 25px;
+    border-style: ridge;
+    background-color: white;
+    border-radius: 5px;
+    border-color: black;
+}
+
+.alert_text_2{
+    position: absolute;
+    top: 25%;
+    left: 15%;
+    font-size: 16px;
+}
+
+.close2{
+    position: absolute;
+    top: 25%;
+    left: 86%;
+    width: 25px;
+    height: 25px;
+    border-style: ridge;
+    background-color: white;
+    border-radius: 5px;
+    border-color: black;
+}
+
+.alert_text_3{
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    font-size: 16px;
+}
+
+.close3{
+    position: absolute;
+    top: 25%;
+    left: 80%;
+    width: 25px;
+    height: 25px;
+    border-style: ridge;
+    background-color: white;
+    border-radius: 5px;
+    border-color: black;
+}
+
+.alert_text_4{
+    position: absolute;
+    top: 25%;
+    left: 20%;
+    font-size: 16px;
 }
 
 input{

@@ -1,3 +1,31 @@
+<div *ngIf="alert_usedemail" class="alert">
+  <strong class="alert_text_1">Email already used! </strong>
+  <button class="close" (click)="closeAlert()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div *ngIf="alert_invalidemail" class="alert">
+  <strong class="alert_text_2">Invalid email or password format! </strong>
+  <button class="close2" (click)="closeAlert()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div *ngIf="alert_name" class="alert">
+  <strong class="alert_text_3">First and last name are required! </strong>
+  <button class="close3" (click)="closeAlert()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div *ngIf="alert_registered" class="green_alert">
+  <strong class="alert_text_4">You are registered! </strong>
+  <button class="close3" (click)="closeAlert()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
 <div class="text">
     The largest community of
     <br>
@@ -12,19 +40,19 @@
                 </div>
                     <form #loginForm="ngForm" id="signUpForm">
                         <div class="mb-3">
-                          <input type="text" class="form-control" id="firstName" name ="firstName" aria-describedby="FirstName" placeholder="First name" [(ngModel)]="firstName">
+                          <input type="text" class="form-control" id="firstName" name ="firstName" aria-describedby="FirstName" placeholder="First name" [(ngModel)]="firstName" required>
                         </div>
                         <div class="mb-3">
                             <br>
-                            <input type="text" class="form-control" id="lastName" name ="lastName" aria-describedby="LastName" placeholder="Last name" [(ngModel)]="lastName">
+                            <input type="text" class="form-control" id="lastName" name ="lastName" aria-describedby="LastName" placeholder="Last name" [(ngModel)]="lastName" required>
                         </div>
                         <div class="mb-3">
                             <br>
-                            <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" [(ngModel)]="email" email="true">
+                            <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" [(ngModel)]="email" email="true" required>
                         </div>
                         <div class="mb-3">
                           <br>
-                          <input type="password" class="form-control" id="exampleInputPassword1" name ="password" placeholder="Create password" [(ngModel)]="password">
+                          <input type="password" class="form-control" id="exampleInputPassword1" name ="password" placeholder="Create password" [(ngModel)]="password" required>
                         </div>
                         <br>
                         <br>
