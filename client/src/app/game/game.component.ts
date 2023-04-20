@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
 
-interface Card {
-  suit: string;
-  value: string;
-}
+declare const buildDeck:any;
+declare const shuffleDeck:any;
+declare const startGame:any;
+declare const getValue:any;
+declare const handleTimer:any;
+declare const startTimer:any;
+declare const handleLicitationPopUp:any;
+declare const clearPopUp:any;
 
 @Component({
   selector: 'app-game',
@@ -13,18 +17,13 @@ interface Card {
 
 export class GameComponent {
 
-  //creating the deck of 32 cards
-  deck: Card[] = [];
-
-  constructor() {
-    const suits = ['rosu', 'duba', 'verde', 'ghinda'];
-    const values = ['2', '3', '4', '9', '10', 'A'];
-
-    for (const suit of suits) {
-      for (const value of values) {
-        this.deck.push({suit, value});
-      }
-    }
-    console.log(this.deck);
+  ngOnInit(): void {
+    window.onload = function() {
+      clearPopUp();
+      buildDeck();
+      shuffleDeck();
+      startGame();
+      handleLicitationPopUp();
+    };
   }
 }

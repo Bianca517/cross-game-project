@@ -1,3 +1,89 @@
-p {
-    color: aliceblue;
+body{
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+    letter-spacing: -0.015em;
+    color: pink;
+}
+
+#opponent-cards img {
+    height: 159px;
+    width: 107px;
+    margin: 5px;
+    border: 2px solid #a52e2e;
+    border-radius: 10%;
+}
+
+#your-cards img {
+    height: 159px;
+    width: 107px;
+    margin: 5px;
+    border: 2px solid #a52e2e;
+    border-radius: 10%;
+}
+
+#opponent-div div {
+    top: 0;
+    left: 0;
+}
+
+#your-div {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 5px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#your-div h2{
+    top: 0;
+    left: 0;
+}
+
+#popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+  
+#popup {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+  
+#buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+  
+.licitation-button {
+    background-color: rgb(160, 89, 89);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 25px;
+    margin: 10px;
+    cursor: pointer;
+}
+  
+.licitation-button:hover {
+    background-color: #a05959;
+    color: white;
 }
