@@ -67,38 +67,56 @@ function getValue(card) {
 }
 
 function handleTimer(duration, display) {
+    const timerCircle = document.getElementById("timer-container");
+  
     var timer = duration, minutes, seconds;
-    timerInterval = setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-        // clear the timer interval and do any other actions required when timer ends
+  
+    const timerDiv = document.createElement("div");
+    timerDiv.className = "timer-container circle";
+  
+    display.appendChild(timerDiv);
+  
+    const timerText = document.createElement("span");
+    timerText.style.color = "black";
+    timerText.style.fontSize = "2.5em";
+    timerText.style.position = "absolute";
+    timerText.style.left = "95.5%";
+    timerText.style.top = "44%";
+    timerText.style.transform = "translateX(-50%)";
+  
+    timerDiv.appendChild(timerText);
+  
+    let ss = document.getElementById('ss');
+  
+    const timerInterval = setInterval(function () {
+      minutes = parseInt(timer / 60, 10);
+      seconds = parseInt(timer % 60, 10);
+  
+      ss.style.strokeDashoffset = 440- (440*seconds)/30;
+  
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+  
+      timerText.textContent = minutes + ":" + seconds;
+  
+      if (--timer < 0) {
         clearInterval(timerInterval);
         userTurn != userTurn;
         console.log("User turn: " + userTurn);
         console.log("Timer ended!");
-    }
-  }, 1000);
-}
-
+      }
+    }, 1000);
+  }
+  
 function startTimer() {
-    // start the 30-second timer 
-    var timerDisplay = document.createElement("div");
-    timerDisplay.setAttribute("id", "timer-display");
-    document.body.appendChild(timerDisplay);
-    handleTimer(30, timerDisplay);
-}
+    handleTimer(30, document.body);
+    document.getElementById("timer-container").style.display = "flex";
+  }
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 async function handleLicitationPopUp() {
-    await delay(5000);
+    await delay(4000);
     //unhide popup
     parentOfPopUpContainer.appendChild(popupContainer);
     
