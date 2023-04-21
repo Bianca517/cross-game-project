@@ -1,10 +1,14 @@
 body{
+    background-color: #836953;
+    height: 100%;
+    width: 100%;
+    position: absolute;
     font-family: 'Outfit';
     font-style: normal;
     font-weight: 400;
     line-height: 120%;
     letter-spacing: -0.015em;
-    color: pink;
+    color: black;
 }
 
 #opponent-cards img {
@@ -13,6 +17,7 @@ body{
     margin: 5px;
     border: 2px solid #a52e2e;
     border-radius: 10%;
+    z-index: 1;
 }
 
 #your-cards img {
@@ -21,6 +26,7 @@ body{
     margin: 5px;
     border: 2px solid #a52e2e;
     border-radius: 10%;
+    z-index: 1;
 }
 
 #opponent-div div {
@@ -86,4 +92,47 @@ body{
 .licitation-button:hover {
     background-color: #a05959;
     color: white;
+}
+
+#timer-container {
+    display:none;
+}
+
+#timer-container .circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    top: 55%;
+    left: 90%;
+    justify-content: center;
+    align-items: center;
+}
+
+#timer-container .circle svg {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    transform: rotate(270deg);
+}
+
+#timer-container .circle svg circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    fill: #a52e2e;
+    stroke: rgb(80, 67, 67);
+    stroke-width: 2;
+    transform: translate(5px, 5px);
+}
+
+#timer-container .circle svg circle:nth-child(2) {
+  stroke: black;
+  stroke-dasharray: 440;
+}
+
+#timer-container div {
+    position: absolute;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1.5em;
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 declare const buildDeck:any;
 declare const shuffleDeck:any;
@@ -12,18 +12,17 @@ declare const clearPopUp:any;
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  styleUrls: ['./game.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class GameComponent {
 
   ngOnInit(): void {
-    window.onload = function() {
-      clearPopUp();
       buildDeck();
       shuffleDeck();
       startGame();
       handleLicitationPopUp();
+      clearPopUp();
     };
-  }
 }
