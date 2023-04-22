@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 declare const buildDeck:any;
 declare const shuffleDeck:any;
-declare const startGame:any;
+declare const dealCards:any;
 declare const getValue:any;
 declare const handleTimer:any;
 declare const startTimer:any;
@@ -22,7 +22,7 @@ export class GameComponent {
   ngOnInit(): void {
       buildDeck();
       shuffleDeck();
-      startGame();
+      dealCards();
       handleLicitationPopUp();
       clearPopUp();
     };
