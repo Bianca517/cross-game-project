@@ -58,6 +58,7 @@ body{
     width: 350px;
     height: 50px;
     left: 45%;
+    top: 3%;
     text-align: center;
     border-radius: 5px;
 }
@@ -68,6 +69,7 @@ body{
     width: 350px;
     height: 50px;
     left: 45%;
+    top: 3%;
     text-align: center;
     border-radius: 5px;
     border-color: #c3e6cb;
@@ -103,7 +105,7 @@ body{
 .close2{
     position: absolute;
     top: 25%;
-    left: 86%;
+    left: 87%;
     width: 25px;
     height: 25px;
     border-style: ridge;

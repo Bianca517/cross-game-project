@@ -67,22 +67,16 @@ function getValue(card) {
 }
 
 function handleTimer(duration, display) {
-    const timerCircle = document.getElementById("timer-container");
-  
     var timer = duration, minutes, seconds;
   
     const timerDiv = document.createElement("div");
     timerDiv.className = "timer-container circle";
   
     display.appendChild(timerDiv);
+    document.getElementById("timer-container").style.display = "flex";
   
     const timerText = document.createElement("span");
-    timerText.style.color = "black";
-    timerText.style.fontSize = "2.5em";
-    timerText.style.position = "absolute";
-    timerText.style.left = "95.5%";
-    timerText.style.top = "44%";
-    timerText.style.transform = "translateX(-50%)";
+    timerText.textContent = "start";
   
     timerDiv.appendChild(timerText);
   
@@ -97,7 +91,7 @@ function handleTimer(duration, display) {
       minutes = minutes < 10 ? "0" + minutes : minutes;
       seconds = seconds < 10 ? "0" + seconds : seconds;
   
-      timerText.textContent = minutes + ":" + seconds;
+      timerText.textContent = seconds;
   
       if (--timer < 0) {
         clearInterval(timerInterval);
@@ -110,7 +104,6 @@ function handleTimer(duration, display) {
   
 function startTimer() {
     handleTimer(30, document.body);
-    document.getElementById("timer-container").style.display = "flex";
   }
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
