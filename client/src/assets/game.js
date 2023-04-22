@@ -13,6 +13,8 @@ var userTurn = false;
 var popupContainer;
 var parentOfPopUpContainer;
 
+var canRunTimer = false;
+
 function buildDeck() {
     const values = ['2', '3', '4', '9', '10', '11'];
     const types = ['R', 'D', 'V', 'G'];
@@ -95,16 +97,19 @@ function handleTimer(duration, display) {
   
       if (--timer < 0) {
         clearInterval(timerInterval);
-        userTurn != userTurn;
+        userTurn = !userTurn;
         console.log("User turn: " + userTurn);
         console.log("Timer ended!");
+        startTimer();
       }
     }, 1000);
   }
   
 function startTimer() {
-    handleTimer(30, document.body);
-  }
+    if(canRunTimer == true) {
+        handleTimer(5, document.body);
+    }
+}
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -122,7 +127,9 @@ async function handleLicitationPopUp() {
             console.log(`Selected button: ${selectedButton}`);
           
             clearPopUp();
-            startTimer();
+            canRunTimer = true;
+            moveOpponentCards();
+            moveUserCards();
         })
     })
 }
@@ -131,4 +138,61 @@ function clearPopUp() {
     popupContainer = document.querySelector("#popup-container");
     parentOfPopUpContainer = popupContainer.parentNode;
     parentOfPopUpContainer.removeChild(popupContainer);
+}
+
+function canChooseCard() {
+    return userTurn;
+}
+
+function moveOpponentCards() {
+    console.log("can move cards");
+    // Get the image element
+    const cardImages = document.querySelectorAll('#opponent-cards img');
+
+    cardImages.forEach(cardImage => {
+        // Add a click event listener to the image
+        cardImage.addEventListener('click', () => {
+            // Change the position of the image to the center of the screen
+            cardImage.style.position = 'absolute';
+            cardImage.style.top = '45%';
+            cardImage.style.left = '40%';
+            cardImage.style.transform = 'translate(-45%, -40%)';
+            // Add an ID to the image to apply the centered style
+            //cardImage.setAttribute('id', 'centeredDownCardOpponent');
+        });
+    })
+}
+
+function moveUserCards() {
+    console.log("can move your cards");
+   
+    const cardImages = document.querySelectorAll('#your-cards img');
+
+    // Create a wrapper div
+    const wrapperDiv = document.createElement('div');
+    wrapperDiv.id = "wrapperDiv";
+    wrapperDiv.style.position = 'absolute';
+    wrapperDiv.style.top = '50%';
+    wrapperDiv.style.left = '60%';
+    wrapperDiv.style.transform = 'translate(-50%, -60%)';
+    document.body.appendChild(wrapperDiv);
+
+    // Move the images to the wrapper div when they are clicked
+    cardImages.forEach(img => {
+        img.addEventListener('click', () => {
+            img.style.position = 'absolute';
+            img.style.top = '50%';
+            img.style.left = '60%';
+            img.style.transform = 'translate(-50%, -60%)';
+            img.style.transition = 'all 0.5s linear';
+            
+            //added a setTimeout function to delay the animation of the wrapperDiv 
+            //until after the image has been moved to the wrapper div
+            setTimeout(() => {
+                wrapperDiv.appendChild(img);
+                img.style.transform = 'translate(-50%, -60%)';
+                img.style.transition = 'all 0.5s linear';
+              }, 10);
+        });
+    });
 }

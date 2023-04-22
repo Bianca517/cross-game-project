@@ -8,6 +8,7 @@ declare const handleTimer:any;
 declare const startTimer:any;
 declare const handleLicitationPopUp:any;
 declare const clearPopUp:any;
+declare const moveCards:any;
 
 @Component({
   selector: 'app-game',

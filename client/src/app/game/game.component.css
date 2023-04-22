@@ -20,6 +20,11 @@ body{
     border: 2px solid #a52e2e;
     border-radius: 10%;
     z-index: 1;
+    transition: all 0.5s linear;
+}
+
+#opponent-cards img:hover {
+    transform: scale(1.1);
 }
 
 #your-cards img {
@@ -29,11 +34,17 @@ body{
     border: 2px solid #a52e2e;
     border-radius: 10%;
     z-index: 1;
+    transition: all 0.5s linear;
+}
+
+#your-cards img:hover {
+    transform: scale(1.1);
 }
 
 #opponent-div div {
     top: 0;
     left: 0;
+    background-color: bisque;
 }
 
 #your-div {
@@ -45,6 +56,7 @@ body{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    background-color: antiquewhite;
 }
 
 #your-div h2{
@@ -197,3 +209,36 @@ tbody td:first-child {
     background-color: rgb(160, 89, 89);
     color: #ffffff;
 }  
+
+/***** CARDS ANIMATION *****/
+#centeredDownCardOpponent {
+  position: absolute;
+  top: 45%;
+  left: 40%;
+}
+
+#centeredDownCardUser {
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -60%);
+}
+
+#wrapperDiv img {
+    height: 159px;
+    width: 107px;
+    margin: 5px;
+    border: 2px solid #a52e2e;
+    border-radius: 10%;
+    z-index: 1;
+    transform: translate(-50%, -60%);
+    transition: all 0.5s linear;
+}
+
+#wrapperDiv {
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -60%);
+    transition: all 0.5s linear;
+}
