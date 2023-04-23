@@ -64,7 +64,9 @@ body{
     left: 0;
 }
 
-#popup-container {
+/**************** LICITATION-POP-UP ****************/
+
+#licitation-popup-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -77,14 +79,14 @@ body{
     z-index: 999;
 }
   
-#popup {
+#licitation-popup {
     background-color: white;
     border-radius: 10px;
     padding: 20px;
     text-align: center;
 }
   
-#buttons-container {
+#licitation-buttons-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -93,8 +95,8 @@ body{
   
 .licitation-button {
     background-color: rgb(160, 89, 89);
+    border-color: rgb(160, 89, 89);
     color: white;
-    border: none;
     border-radius: 50%;
     width: 60px;
     height: 60px;
@@ -104,10 +106,57 @@ body{
 }
   
 .licitation-button:hover {
-    background-color: #a05959;
-    color: white;
+    border-color: black;
+    font-size: 28px;
 }
 
+/**************** TROMF-POP-UP ****************/
+
+#tromf-popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(2, 2, 2, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#tromf-popup {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+#tromf-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.tromf-button {
+    border-color: #ffffff;
+    border-radius: 50%;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.tromf-button img {
+    border-radius: 70%;
+    height: 45px;
+    width: 45px;
+}
+
+.tromf-button:hover {
+    border-color: #a52e2e;
+}
+  
+/**************** TIMER ****************/
 span{
     color: black;
     font-size: 3.5em;

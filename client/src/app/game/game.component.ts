@@ -2,7 +2,8 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { GameLogicService } from '../services/game-logic.service'
 
 //declare const startGame:any;
-declare const clearPopUp:any;
+declare const clearLicitationPopUp:any;
+declare const clearTromfPopUp:any;
 
 @Component({
   selector: 'app-game',
@@ -17,7 +18,8 @@ export class GameComponent {
 
   }
   ngOnInit(): void {
-    clearPopUp();
+    clearLicitationPopUp();
+    clearTromfPopUp();
     this.gameLogicService.startGame();
   };
 }
