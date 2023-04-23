@@ -28,7 +28,7 @@
               "src/styles.css"
             ],
             "scripts": [
-              "src/assets/game.js"
+              "src/assets/game-frontend-handler.js"
             ]
           },
           "configurations": {
