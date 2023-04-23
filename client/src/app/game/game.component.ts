@@ -1,14 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { GameLogicService } from '../services/game-logic.service'
 
-declare const buildDeck:any;
-declare const shuffleDeck:any;
-declare const dealCards:any;
-declare const getValue:any;
-declare const handleTimer:any;
-declare const startTimer:any;
-declare const handleLicitationPopUp:any;
+//declare const startGame:any;
 declare const clearPopUp:any;
-declare const moveCards:any;
 
 @Component({
   selector: 'app-game',
@@ -19,11 +13,11 @@ declare const moveCards:any;
 
 export class GameComponent {
 
+  constructor(private gameLogicService: GameLogicService) {
+
+  }
   ngOnInit(): void {
-      buildDeck();
-      shuffleDeck();
-      dealCards();
-      handleLicitationPopUp();
-      clearPopUp();
-    };
+    clearPopUp();
+    this.gameLogicService.startGame();
+  };
 }
