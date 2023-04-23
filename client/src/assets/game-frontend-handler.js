@@ -1,9 +1,15 @@
 var timerInterval = 0;
 
-var popupContainer;
-var parentOfPopUpContainer;
+var licitationPopupContainer;
+var parentOfLicitationPopUpContainer;
+
+var tromfPopupContainer;
+var parentOfTromfPopupContainer;
 
 var canRunTimer = false;
+var timerInterval;
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 function createOpponentLicitationAlert(string) {
     // Create the alert element
@@ -42,55 +48,64 @@ function createOpponentLicitationAlert(string) {
     }, 2000);
 }
 
-function handleTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-  
+function appendTimerElement() {
+    const timerCircle = document.getElementById("timer-container");
     const timerDiv = document.createElement("div");
     timerDiv.className = "timer-container circle";
-  
-    display.appendChild(timerDiv);
-    document.getElementById("timer-container").style.display = "flex";
-  
-    const timerText = document.createElement("span");
-    timerText.textContent = "start";
-  
-    timerDiv.appendChild(timerText);
-  
-    let ss = document.getElementById('ss');
-  
-    const timerInterval = setInterval(function () {
-      minutes = parseInt(timer / 60, 10);
-      seconds = parseInt(timer % 60, 10);
-  
-      ss.style.strokeDashoffset = 440- (440*seconds)/30;
-  
-      minutes = minutes < 10 ? "0" + minutes : minutes;
-      seconds = seconds < 10 ? "0" + seconds : seconds;
-  
-      timerText.textContent = seconds;
-  
-      if (--timer < 0) {
-        clearInterval(timerInterval);
-        userTurn = !userTurn;
-        console.log("User turn: " + userTurn);
-        console.log("Timer ended!");
-        startTimer();
-      }
-    }, 1000);
-}
-  
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
-function waitForLicitationEvent() {
+    document.body.appendChild(timerDiv);
+
+    const timerText = document.createElement("span");
+    timerText.style.color = "black";
+    timerText.style.fontSize = "2.5em";
+    timerText.style.position = "absolute";
+    timerText.style.left = "95.5%";
+    timerText.style.top = "44%";
+    timerText.style.transform = "translateX(-50%)";
+
+    timerDiv.appendChild(timerText);
+
+    let ss = document.getElementById('ss');
+    return ss, timerText;
+}
+
+function handleTimer(duration) {
+    let timeLeft = duration;
+    
+    //let ss, timerText = appendTimerElement();
+    return new Promise( resolve => {
+        timerInterval = setInterval( () => {
+
+            //ss.style.strokeDashoffset = 440- (440*seconds)/30;
+            //timerText.textContent = seconds;
+            
+            console.log("Time left: " + timeLeft);
+
+            timeLeft--;
+            console.log(timeLeft);
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                //console.log("Timer ended!");
+                resolve("Timer ended!");
+            }
+        }, 1000);
+    })
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+function waitForLicitationEvent(buttonsClassName) {
     return new Promise(resolve => {
-      const licitationButtons = document.getElementsByClassName('licitation-button');
+      const buttons = document.getElementsByClassName(`${buttonsClassName}`);
       const listener = (event) => {
-        for (const button of licitationButtons) {
+        for (const button of buttons) {
           button.removeEventListener('click', listener);
         }
         resolve(event);
       };
-      for (const button of licitationButtons) {
+      for (const button of buttons) {
         button.addEventListener('click', listener);
       }
     });
@@ -99,27 +114,47 @@ function waitForLicitationEvent() {
 async function handleLicitationPopUp() {
     await delay(4000);
     //unhide popup
-    parentOfPopUpContainer.appendChild(popupContainer);
-    
-    const licitationButtons = document.getElementsByClassName("licitation-button");
+    parentOfLicitationPopUpContainer.appendChild(licitationPopupContainer);
 
-    const event = await waitForLicitationEvent();
+    const event = await waitForLicitationEvent("licitation-button");
     const selectedButton = event.target.textContent;
+
     whatUserLicitated = selectedButton;
     console.log(`Selected button: ${selectedButton}`);
-    clearPopUp();
-    setTimeout(() => { moveOpponentCards(); moveUserCards();}, 1000);
+    
+    clearLicitationPopUp();
     return selectedButton;
 }
 
-function clearPopUp() {
-    popupContainer = document.querySelector("#popup-container");
-    parentOfPopUpContainer = popupContainer.parentNode;
-    parentOfPopUpContainer.removeChild(popupContainer);
+function clearLicitationPopUp() {
+    licitationPopupContainer = document.querySelector("#licitation-popup-container");
+    parentOfLicitationPopUpContainer = licitationPopupContainer.parentNode;
+    parentOfLicitationPopUpContainer.removeChild(licitationPopupContainer);
+}
+
+async function handleTromfPopUp() {
+    await delay(1000);
+    //unhide popup
+    parentOfLicitationPopUpContainer.appendChild(tromfPopupContainer);
+    
+    const event = await waitForLicitationEvent("tromf-button");
+
+    const chosenTromf = event.target.getAttribute("name");
+    console.log(`Chosen tromf: ${chosenTromf}`);
+    
+    clearTromfPopUp();
+    setTimeout(() => { moveOpponentCards(); moveUserCards();}, 1000);
+    return chosenTromf;
+}
+
+function clearTromfPopUp() {
+    tromfPopupContainer = document.querySelector("#tromf-popup-container");
+    parentOfTromfPopupContainer = tromfPopupContainer.parentNode;
+    parentOfTromfPopupContainer.removeChild(tromfPopupContainer);
 }
 
 function moveOpponentCards() {
-    console.log("can move cards");
+    //console.log("can move cards");
     // Get the image element
     const cardImages = document.querySelectorAll('#opponent-cards img');
 
@@ -138,7 +173,7 @@ function moveOpponentCards() {
 }
 
 function moveUserCards() {
-    console.log("can move your cards");
+    //console.log("can move your cards");
    
     const cardImages = document.querySelectorAll('#your-cards img');
 

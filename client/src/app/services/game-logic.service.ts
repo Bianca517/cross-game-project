@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
 
+declare const delay:any;
 declare const handleLicitationPopUp:any;
-declare const clearPopUp:any;
+declare const handleTromfPopUp:any;
+declare const clearLicitationPopUp:any;
+declare const clearTromfPopUp:any;
 declare const handleTimer:any;
 declare const createOpponentLicitationAlert:any;
 declare const waitForEvent:any;
+declare const stopTimer:any;
 
-var opponentSum:number = 0;
-var yourSum:number = 0;
+let opponentSum:number = 0;
+let yourSum:number = 0;
 
-var deck:string[] = []; 
+let deck:string[] = []; 
 
-var opponentCards:string[] = [];
-var yourCards:string[] = [];
-var canRunTimer:boolean = false;
+let opponentCards:string[] = [];
+let yourCards:string[] = [];
+let canRunTimer:boolean = false;
 
 const licitationThresholds: {[key: string]: number} = {
     "Pas" : 0,
@@ -25,9 +29,9 @@ const licitationThresholds: {[key: string]: number} = {
     "6" : 198
 }
 
-var whatUserLicitated:string;
-var tromf:string;
-var userTurn:boolean = false;
+let whatUserLicitated:string;
+let chosenTromf:string;
+let userTurn:boolean = false;
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +50,14 @@ export class GameLogicService {
       await this.userLicitation();
 
       //opponent licitation
-      setTimeout(() => this.opponentLicitation(), 1000);
+      await delay(1000);
+      await this.opponentLicitation();
+
+      //the one who licitated more gets to choose the tromf
+      await this.chooseTromf();
+
+      //after this, userTurn is set for the first round
+      await this.handleRounds();
   }
 
   buildDeck() {
@@ -139,11 +150,11 @@ export class GameLogicService {
     console.log("user licitation finished");
   }
 
-  opponentLicitation() {
+  async opponentLicitation() {
     //presupunem ca ia toate mainile
     let sumWithAnunt = opponentSum;
     let whatOpponentLicitated = 'Pas';
-    console.log("opponent sum without anunt" + sumWithAnunt);
+    //console.log("opponent sum without anunt" + sumWithAnunt);
     //search for anunt
     if("3-D" in opponentCards && "4-D" in opponentCards) {
         sumWithAnunt += 20;
@@ -158,7 +169,7 @@ export class GameLogicService {
         sumWithAnunt += 20;
     }
 
-    console.log("opponent sum with anunt" + sumWithAnunt);
+    //console.log("opponent sum with anunt" + sumWithAnunt);
     //find the smallest licitation threshold
     for (const [key, value] of Object.entries(licitationThresholds)) {
         if (value < sumWithAnunt) {
@@ -166,19 +177,52 @@ export class GameLogicService {
         }
         else break;
     }
+
     createOpponentLicitationAlert(`Opponent licitated ${whatOpponentLicitated}`);
+    await delay(1000);
 
     if(licitationThresholds[whatOpponentLicitated] < licitationThresholds[whatUserLicitated]) {
-        this.turnOffOrOnUserTurn("ON");
+      userTurn = true;
     }
     else {
-        this.turnOffOrOnUserTurn("OFF");
+      userTurn = false;
     }
+    console.log("user turn" + userTurn);
   }
 
-  turnOffOrOnUserTurn(command:string) {
-    if(command === "ON") {
-        userTurn = true;
+  async chooseTromf() {
+    chosenTromf = await handleTromfPopUp();
+    console.log("tromf chosed");
+  }
+
+  async handleRounds() {
+    let cardsId = "";
+    this.turnOffOrOnUserTurn(userTurn);
+
+    if(userTurn == true) {
+      cardsId = "your-cards";
+    }
+    else {
+      cardsId = "opponent-cards"
+    }
+
+    //daca user/opponent a ales o carte sau timer ended => switch turns
+    const cardWasChosen = this.waitForCardChosenEvent(cardsId);
+    const timerHasExpired = this.startTimer();
+
+    Promise.race([timerHasExpired, cardWasChosen])
+      .then( (value) => {
+          stopTimer();
+          console.log("Can switch users turn!");
+          console.log("Resolved with " + value);
+          userTurn = !userTurn;
+          console.log(yourCards);
+        }
+      )
+  }
+
+  turnOffOrOnUserTurn(isUserTurn:boolean) {
+    if(isUserTurn === true) {
         //gray out opponent cards
         const opponentCards = document.getElementById('opponent-cards')?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
         for(let i = 0; i < opponentCards.length; i++) {
@@ -188,7 +232,6 @@ export class GameLogicService {
         }
     }
     else {
-        userTurn = false;
         //gray out user cards
         const userCards = document.getElementById('your-cards')?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
         for(let i = 0; i < userCards.length; i++) {
@@ -199,14 +242,55 @@ export class GameLogicService {
     }
   }
 
-  startTimer() {
-    if(canRunTimer == true) {
-        handleTimer(5, document.body);
+  async startTimer() {
+    console.log("Start timer!");
+    const timerContainer = document.getElementById("timer-container");
+    if (timerContainer !== null) {
+      timerContainer.style.display = "flex";
     }
+
+    return handleTimer(5);
   }
 
-  canChooseCard() {
-    return userTurn;
+  async waitForCardChosenEvent(idCards:string) {
+    return new Promise(resolve => {
+      const cards =  document.getElementById(`${idCards}`)?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
+      
+      const listener = (event:MouseEvent) => {
+        for (let i:number = 0; i < cards.length; i++) {
+          const card = cards[i];
+          card.removeEventListener('click', listener);
+        }
+        const clickedCard = event.target as HTMLImageElement;
+        const cardName = clickedCard.src.split("/").pop()!;
+        console.log(cardName + " was clicked!");
+
+        //remove the selected card from user's/opponent's hand
+        this.removeSelectedCard(cardName, idCards);
+        resolve(cardName);
+      };
+
+      for (let i:number = 0; i < cards.length; i++) {
+        const card = cards[i];
+        card.addEventListener('click', listener);
+      }
+    });
+  }
+
+  removeSelectedCard(card:string, cardsId:string) {
+    card = card.split('.')[0];
+    if(cardsId === 'your-cards') {
+      const index = yourCards.indexOf(card, 0);
+      if (index > -1) {
+        yourCards.splice(index, 1);
+      }
+    }
+    else {
+      const index = opponentCards.indexOf(card, 0);
+      if (index > -1) {
+        opponentCards.splice(index, 1);
+      }
+    }
   }
 
 }
