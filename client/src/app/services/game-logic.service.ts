@@ -9,6 +9,7 @@ declare const handleTimer:any;
 declare const createOpponentLicitationAlert:any;
 declare const waitForEvent:any;
 declare const stopTimer:any;
+declare const moveOpponentCard:any;
 
 let opponentSum:number = 0;
 let yourSum:number = 0;
@@ -31,7 +32,7 @@ const licitationThresholds: {[key: string]: number} = {
 
 let whatUserLicitated:string;
 let chosenTromf:string;
-let userTurn:boolean = false;
+let userTurn:boolean = true;
 
 @Injectable({
   providedIn: 'root'
@@ -55,9 +56,9 @@ export class GameLogicService {
 
       //the one who licitated more gets to choose the tromf
       await this.chooseTromf();
-
+      
       //after this, userTurn is set for the first round
-      await this.handleRounds();
+      await this.handleGamePlay();
   }
 
   buildDeck() {
@@ -95,6 +96,7 @@ export class GameLogicService {
         //create image tag
         let cardImg = document.createElement("img");
         cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+        cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
         document.getElementById("opponent-cards")?.append(cardImg);
     }
 
@@ -109,6 +111,7 @@ export class GameLogicService {
         //create image tag
         let cardImg = document.createElement("img");
         cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+        cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
         document.getElementById("your-cards")?.append(cardImg);
     }
  
@@ -195,7 +198,7 @@ export class GameLogicService {
     console.log("tromf chosed");
   }
 
-  async handleRounds() {
+  async handleTurns() {
     let cardsId = "";
     this.turnOffOrOnUserTurn(userTurn);
 
@@ -206,23 +209,61 @@ export class GameLogicService {
       cardsId = "opponent-cards"
     }
 
-    //daca user/opponent a ales o carte sau timer ended => switch turns
-    const cardWasChosen = this.waitForCardChosenEvent(cardsId);
-    const timerHasExpired = this.startTimer();
+    if(userTurn == true) {
+      //daca user/opponent a ales o carte sau timer ended => switch turns
+      const cardWasChosen = this.waitForCardChosenEvent(cardsId);
+      const timerHasExpired = this.startTimer();
 
-    Promise.race([timerHasExpired, cardWasChosen])
-      .then( (value) => {
-          stopTimer();
-          console.log("Can switch users turn!");
-          console.log("Resolved with " + value);
-          userTurn = !userTurn;
-          console.log(yourCards);
-        }
-      )
+      await Promise.race([timerHasExpired, cardWasChosen]);
+      
+      stopTimer();
+      //console.log("Resolved with " + value);
+    }
+    else {
+      await delay(1500);
+      this.moveOpponent();
+      await delay(1500);
+    }
+
+    userTurn = !userTurn;
+    //console.log(yourCards);
+    console.log("Can switch users turn!");
+  }
+
+  async handleGamePlay() {
+    let promiseChain = Promise.resolve();
+
+    for (let i = 0; i < 16; i++) {
+      promiseChain = promiseChain.then(() => this.handleTurns());
+    }
+
+    await promiseChain;
+  }
+
+  moveOpponent() {
+    this.moveOpponentWhenOpponentFirst();
+  }
+
+  moveOpponentWhenOpponentFirst() {
+    let randomIndex:number = Math.floor(Math.random() * opponentCards.length);
+    moveOpponentCard(opponentCards[randomIndex])
+    this.removeSelectedCard(opponentCards[randomIndex], "opponent-cards");
+  }
+
+  moveOpponentWhenOpponentSecond() {
+
   }
 
   turnOffOrOnUserTurn(isUserTurn:boolean) {
     if(isUserTurn === true) {
+        //ungray user cards
+        const userCards = document.getElementById('your-cards')?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
+        for(let i = 0; i < userCards.length; i++) {
+          const card = userCards[i];
+          card.style.opacity = ""; 
+          card.style.pointerEvents = ""; /* Disable click and hover events */
+        }
+
         //gray out opponent cards
         const opponentCards = document.getElementById('opponent-cards')?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
         for(let i = 0; i < opponentCards.length; i++) {
@@ -232,6 +273,14 @@ export class GameLogicService {
         }
     }
     else {
+        //ungray opponent cards
+        const opponentCards = document.getElementById('opponent-cards')?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
+        for(let i = 0; i < opponentCards.length; i++) {
+          const card = opponentCards[i];
+          card.style.opacity = ""; 
+          card.style.pointerEvents = ""; /* Disable click and hover events */
+        }
+
         //gray out user cards
         const userCards = document.getElementById('your-cards')?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
         for(let i = 0; i < userCards.length; i++) {
@@ -248,8 +297,7 @@ export class GameLogicService {
     if (timerContainer !== null) {
       timerContainer.style.display = "flex";
     }
-
-    return handleTimer(5);
+    return handleTimer(3);
   }
 
   async waitForCardChosenEvent(idCards:string) {
