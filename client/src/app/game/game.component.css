@@ -23,9 +23,11 @@
     transition: all 0.5s linear;
 }
 
+/*
 #opponent-cards img:hover {
     transform: scale(1.1);
 }
+*/
 
 #your-cards img {
     height: 159px;
@@ -34,12 +36,13 @@
     border: 2px solid #a52e2e;
     border-radius: 10%;
     z-index: 1;
-    transition: all 0.5s linear;
 }
 
+/*
 #your-cards img:hover {
     transform: scale(1.1);
 }
+*/
 
 #opponent-div div {
     top: 0;
@@ -157,14 +160,6 @@
 }
   
 /**************** TIMER ****************/
-span{
-    color: black;
-    font-size: 3.5em;
-    position: absolute;
-    left: 92%;
-    top: 42%;
-    transform: translateX(-50%);
-}
 
 #timer-container {
     display:none;
@@ -175,7 +170,7 @@ span{
     width: 150px;
     height: 150px;
     top: 55%;
-    left: 87%;
+    left: 90%;
     justify-content: center;
     align-items: center;
 }
@@ -191,14 +186,14 @@ span{
     position: absolute;
     width: 100%;
     height: 100%;
-    fill: white;
-    stroke: black;
-    stroke-width: 6;
+    fill: #fcfcfc;
+    stroke: rgb(241, 74, 74);
+    stroke-width: 4;
     transform: translate(5px, 5px);
 }
 
 #timer-container .circle svg circle:nth-child(2) {
-  stroke: rgb(160, 89, 89);
+  stroke: rgb(240, 62, 62);
   stroke-dasharray: 440;
 }
 
@@ -209,6 +204,7 @@ span{
     font-size: 1.5em;
 }
 
+/**************** SCORE-TABLE ****************/
 .table-container {
     top: 0;
     right: 0%;

@@ -73,11 +73,29 @@ function handleTimer(duration) {
     let timeLeft = duration;
     
     //let ss, timerText = appendTimerElement();
+    const timerCircle = document.getElementById("timer-container");
+    const timerDiv = document.createElement("div");
+    timerDiv.className = "timer-container circle";
+
+    document.body.appendChild(timerDiv);
+
+    const timerText = document.createElement("span");
+    timerText.style.color = "black";
+    timerText.style.fontSize = "2.5em";
+    timerText.style.position = "absolute";
+    timerText.style.left = "95.5%";
+    timerText.style.top = "44%";
+    timerText.style.transform = "translateX(-50%)";
+
+    timerDiv.appendChild(timerText);
+
+    let ss = document.getElementById('ss');
+
     return new Promise( resolve => {
         timerInterval = setInterval( () => {
 
-            //ss.style.strokeDashoffset = 440- (440*seconds)/30;
-            //timerText.textContent = seconds;
+            ss.style.strokeDashoffset = 440 - (440 * timeLeft)/30;
+            timerText.textContent = "0" + ":" + timeLeft;
             
             console.log("Time left: " + timeLeft);
 
@@ -87,6 +105,7 @@ function handleTimer(duration) {
                 clearInterval(timerInterval);
                 //console.log("Timer ended!");
                 resolve("Timer ended!");
+                timerText.textContent = "";
             }
         }, 1000);
     })
@@ -143,7 +162,9 @@ async function handleTromfPopUp() {
     console.log(`Chosen tromf: ${chosenTromf}`);
     
     clearTromfPopUp();
-    setTimeout(() => { moveOpponentCards(); moveUserCards();}, 1000);
+    moveUserCards();
+    //setTimeout(() => {moveOpponentCards(); moveUserCards();}, 1000);
+    //setTimeout(() => { moveUserCards();}, 1000);
     return chosenTromf;
 }
 
@@ -153,6 +174,7 @@ function clearTromfPopUp() {
     parentOfTromfPopupContainer.removeChild(tromfPopupContainer);
 }
 
+/*
 function moveOpponentCards() {
     //console.log("can move cards");
     // Get the image element
@@ -171,11 +193,45 @@ function moveOpponentCards() {
         });
     })
 }
+*/
+
+function moveOpponentCard(card) {
+    // Get the image element
+    const cardImage = document.querySelector(`#opponent-cards img[alt="${card}"]`);
+    console.log('Moving ' + card);
+
+    // Change the position of the image to the center of the screen ONCE IT IS LOADED
+    cardImage.style.position = 'absolute';
+    cardImage.style.top = '45%';
+    cardImage.style.left = '40%';
+    cardImage.style.transform = 'translate(-45%, -40%)';
+    cardImage.style.transition = 'all 0.5s linear';
+    cardImage.setAttribute('id', 'centeredDownCardOpponent');
+}
 
 function moveUserCards() {
     //console.log("can move your cards");
    
     const cardImages = document.querySelectorAll('#your-cards img');
+
+    //make the cards scalable on hover
+    //simulate this
+    /*
+    #your-cards img:hover {
+    transform: scale(1.1);
+    }
+    */
+    for(let i = 0; i < cardImages.length; i++) {
+        const card = cardImages[i];
+
+        card.addEventListener('mouseover', () => {
+            card.style.transform = 'scale(1.1)';
+          });
+          
+          card.addEventListener('mouseout', () => {
+            card.style.transform = 'none';
+          });
+    }
 
     // Create a wrapper div
     const wrapperDiv = document.createElement('div');
@@ -193,7 +249,7 @@ function moveUserCards() {
             cardImage.style.top = '50%';
             cardImage.style.left = '60%';
             cardImage.style.transform = 'translate(-50%, -60%)';
-            cardImage.style.transition = 'all 0.5s linear';
+            //cardImage.style.transition = 'all 0.5s linear';
             
             //added a setTimeout function to delay the animation of the wrapperDiv 
             //until after the image has been moved to the wrapper div
