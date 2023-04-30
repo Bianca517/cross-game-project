@@ -1,0 +1,3 @@
+[submodule "cross-game-ai"]
+	path = cross-game-ai
+	url = https://github.com/Bianca517/cross-game-ai.git
