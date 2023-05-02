@@ -56,11 +56,11 @@ function appendTimerElement() {
     document.body.appendChild(timerDiv);
 
     const timerText = document.createElement("span");
-    timerText.style.color = "black";
+    timerText.style.color = "white";
     timerText.style.fontSize = "2.5em";
     timerText.style.position = "absolute";
-    timerText.style.left = "95.5%";
-    timerText.style.top = "44%";
+    timerText.style.left = "95%";
+    timerText.style.top = "55%";
     timerText.style.transform = "translateX(-50%)";
 
     timerDiv.appendChild(timerText);
@@ -84,7 +84,7 @@ function handleTimer(duration) {
     timerText.style.fontSize = "2.5em";
     timerText.style.position = "absolute";
     timerText.style.left = "95.5%";
-    timerText.style.top = "44%";
+    timerText.style.top = "41%";
     timerText.style.transform = "translateX(-50%)";
 
     timerDiv.appendChild(timerText);
