@@ -263,4 +263,18 @@ function moveUserCards() {
     });
 }
 
+function removeDownCards(card) {
+  // Get the image element
+  const cardImage = document.querySelector(`#opponent-cards img[alt="${card}"]`);
+  console.log('Removing ' + card);
+
+  // Change the position of the image to the left of the screen ONCE IT IS LOADED
+  cardImage.style.position = 'absolute';
+  cardImage.style.top = '50%';
+  cardImage.style.left = '10%';
+  cardImage.style.transform = 'translate(50%, -10%)';
+  cardImage.style.transition = 'all 0.5s linear';
+  cardImage.setAttribute('id', 'leftDownCardOpponent');
+}     
+
 //module.exports = {createOpponentLicitationAlert, handleTimer, handleLicitationPopUp, clearPopUp, moveOpponentCards, moveUserCards}

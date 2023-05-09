@@ -13,6 +13,10 @@
     padding: 0;
 }
 
+#game-scene {
+    background-color: bisque;
+}
+
 #opponent-cards img {
     height: 159px;
     width: 107px;
@@ -59,10 +63,16 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    background-color: antiquewhite;
+    background-color: bisque;
 }
 
 #your-div h2{
+    top: 0;
+    left: 0;
+}
+
+#opponent-div h3{
+    background-color: bisque;
     top: 0;
     left: 0;
 }
@@ -214,7 +224,6 @@
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
   
 table {
@@ -261,6 +270,12 @@ tbody td:first-child {
   top: 45%;
   left: 40%;
 }
+
+#leftDownCardOpponent {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+  }
 
 #centeredDownCardUser {
   position: absolute;

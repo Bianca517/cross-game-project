@@ -41,21 +41,21 @@
                 <div class="text-center">
                     <h1>Sign up for an account</h1> 
                 </div>
-                    <form #loginForm="ngForm" id="signUpForm">
+                    <form #loginForm="ngForm" id="signUpForm" (ngSubmit)="signupUser()">
                         <div class="mb-3">
-                          <input type="text" class="form-control" id="firstName" name ="firstName" aria-describedby="FirstName" placeholder="First name" [(ngModel)]="firstName" required>
+                          <input type="text" class="form-control" id="firstName" name ="firstName" aria-describedby="FirstName" placeholder="First name" [(ngModel)]="firstName" required #fisrtNameInput>
                         </div>
                         <div class="mb-3">
                             <br>
-                            <input type="text" class="form-control" id="lastName" name ="lastName" aria-describedby="LastName" placeholder="Last name" [(ngModel)]="lastName" required>
+                            <input type="text" class="form-control" id="lastName" name ="lastName" aria-describedby="LastName" placeholder="Last name" [(ngModel)]="lastName" required #lastNameInput>
                         </div>
                         <div class="mb-3">
                             <br>
-                            <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" [(ngModel)]="email" email="true" required>
+                            <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" [(ngModel)]="email" email="true" required #emailInput>
                         </div>
                         <div class="mb-3">
                           <br>
-                          <input type="password" class="form-control" id="exampleInputPassword1" name ="password" placeholder="Create password" [(ngModel)]="password" required>
+                          <input type="password" class="form-control" id="exampleInputPassword1" name ="password" placeholder="Create password" [(ngModel)]="password" required (keyup.enter)="signupUser()" #passwordInput>
                         </div>
                         <br>
                         <br>

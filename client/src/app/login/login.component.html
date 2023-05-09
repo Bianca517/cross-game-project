@@ -21,14 +21,14 @@
                 <div class="text-center">
                     <h1>Log in with your account</h1>
                 </div>
-                    <form #loginForm="ngForm" id="loginForm">
+                    <form #loginForm="ngForm" id="loginForm" (ngSubmit)="loginUser()">
 
                         <div class="mb-3">
-                          <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" autocomplete="on" [(ngModel)]="email" email="true">
+                          <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Email" autocomplete="on" [(ngModel)]="email" email="true" #emailInput>
                         </div>
                         <br>
                         <div class="mb-3">
-                          <input type="password" class="form-control" id="exampleInputPassword1" name ="password" placeholder="Password" autocomplete="on" [(ngModel)]="password">
+                          <input type="password" class="form-control" id="exampleInputPassword1" name ="password" placeholder="Password" autocomplete="on" [(ngModel)]="password" (keyup.enter)="loginUser()" #passwordInput>
                         </div>
                         <br>
                         <br>
