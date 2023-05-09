@@ -10,6 +10,7 @@ declare const createOpponentLicitationAlert:any;
 declare const waitForEvent:any;
 declare const stopTimer:any;
 declare const moveOpponentCard:any;
+declare const removeDownCards: any;
 
 let opponentSum:number = 0;
 let yourSum:number = 0;
@@ -95,7 +96,7 @@ export class GameLogicService {
         //display all starting cards
         //create image tag
         let cardImg = document.createElement("img");
-        cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+        cardImg.src = "./assets/card-faces/back.jpg";
         cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
         document.getElementById("opponent-cards")?.append(cardImg);
     }
@@ -235,6 +236,10 @@ export class GameLogicService {
 
     for (let i = 0; i < 16; i++) {
       promiseChain = promiseChain.then(() => this.handleTurns());
+
+      /*if(i%2==1) {
+        removeDownCards(opponentCards[0]);
+      }*/
     }
 
     await promiseChain;
