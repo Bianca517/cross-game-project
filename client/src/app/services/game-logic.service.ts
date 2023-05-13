@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { json } from 'body-parser';
 
 declare const delay:any;
 declare const handleLicitationPopUp:any;
