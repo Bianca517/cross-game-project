@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatCardLgImage } from '@angular/material/card';
+import { json } from 'body-parser';
 
 declare const delay:any;
 declare const handleLicitationPopUp:any;
