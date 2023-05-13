@@ -15,7 +15,6 @@ body{
     transform: translate(-50%, -50%);
     background: #ffff;
 }
-
 .card h1 {
     color: black;
     text-align: center;
@@ -25,7 +24,7 @@ body{
 .btn{
     position: absolute;
     top: 82%;
-    left: 45%;
+    left: 40%;
     width: 60px;
     height: 25px;
     border-style: ridge;

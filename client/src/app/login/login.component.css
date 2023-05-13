@@ -10,7 +10,7 @@ html, body {
     padding: 0;
   }
   
-.card{
+  .card{
     border: none;
     width: 15%;
     padding: 40px;
@@ -61,8 +61,8 @@ strong{
 
 .btn{
     position: absolute;
-    top: 78%;
-    left: 45%;
+    top: 75%;
+    left: 40%;
     width: 60px;
     height: 25px;
     border-style: ridge;

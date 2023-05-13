@@ -56,11 +56,11 @@ function appendTimerElement() {
     document.body.appendChild(timerDiv);
 
     const timerText = document.createElement("span");
-    timerText.style.color = "black";
+    timerText.style.color = "white";
     timerText.style.fontSize = "2.5em";
     timerText.style.position = "absolute";
-    timerText.style.left = "95.5%";
-    timerText.style.top = "44%";
+    timerText.style.left = "95%";
+    timerText.style.top = "55%";
     timerText.style.transform = "translateX(-50%)";
 
     timerDiv.appendChild(timerText);
@@ -84,7 +84,7 @@ function handleTimer(duration) {
     timerText.style.fontSize = "2.5em";
     timerText.style.position = "absolute";
     timerText.style.left = "95.5%";
-    timerText.style.top = "44%";
+    timerText.style.top = "41%";
     timerText.style.transform = "translateX(-50%)";
 
     timerDiv.appendChild(timerText);
@@ -249,7 +249,7 @@ function moveUserCards() {
             cardImage.style.top = '50%';
             cardImage.style.left = '60%';
             cardImage.style.transform = 'translate(-50%, -60%)';
-            //cardImage.style.transition = 'all 0.5s linear';
+            cardImage.style.transition = 'all 0.5s linear';
             
             //added a setTimeout function to delay the animation of the wrapperDiv 
             //until after the image has been moved to the wrapper div
@@ -258,8 +258,56 @@ function moveUserCards() {
                 cardImage.setAttribute('id', 'centeredDownCardUser');
                 cardImage.style.transform = 'translate(-50%, -60%)';
                 cardImage.style.transition = 'all 0.5s linear';
+                cardImage.style.opacity = '1';
               }, 10);
         });
+    });
+}
+
+var opacity = 0;
+var intervalID = 0;
+
+function fadeOut () {
+    intervalID = setInterval(hide,200);
+}
+
+function hide() {
+    //for opponent
+    const imgList = document.querySelectorAll('#centeredDownCardOpponent');
+    console.log("img " + imgList);
+
+    imgList.forEach((img) => {
+        opacityString = img.style.opacity;
+        opacity = Number(opacityString);
+        console.log("opacity " + opacity);
+        if(opacity > 0) {
+            setTimeout(() => {
+            opacity = opacity - 0.1;
+            img.style.opacity = opacity;
+        }, 0);
+        }
+        else {
+            clearInterval(intervalID);
+        }
+    });
+
+    //for user
+    const imgListUser = document.querySelectorAll('#centeredDownCardUser');
+    console.log("img " + imgListUser);
+
+    imgListUser.forEach((img) => {
+        opacityString = img.style.opacity;
+        opacity = Number(opacityString);
+        console.log("opacity " + opacity);
+        if(opacity > 0) {
+            setTimeout(() => {
+            opacity = opacity - 0.1;
+            img.style.opacity = opacity;
+        }, 3000);
+        }
+        else {
+            clearInterval(intervalID);
+        }
     });
 }
 

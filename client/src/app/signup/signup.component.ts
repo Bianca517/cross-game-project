@@ -6,7 +6,7 @@ import { ViewEncapsulation } from '@angular/core';
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
-  encapsulation: ViewEncapsulation.None
+  //encapsulation: ViewEncapsulation.None
 })
 export class SignupComponent implements OnInit {
 
@@ -54,6 +54,9 @@ export class SignupComponent implements OnInit {
         if (!this.firstName || !this.lastName) {
           this.alert_name = true;
         }
+
+        this.email = '';
+        this.password = '';
     });
 }
 

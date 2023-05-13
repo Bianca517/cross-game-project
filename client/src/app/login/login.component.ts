@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LoginService } from '../services/login.service';
 import { Router } from '@angular/router';
 import { ViewEncapsulation } from '@angular/core';
@@ -40,12 +40,14 @@ export class LoginComponent implements OnInit{
       this.routing = true; // set routing to true after successful login
       this.router.navigate(['/start']); // navigate programmatically to the start page
     },
-    err => this.alert=true
-    );
-   
+    err => {
+      this.alert=true;
+      this.email = '';
+      this.password = '';
+    });
   }
   
   closeAlert() {
-    this.alert=false; //false => not showing
+    this.alert = false;
   }
 }
