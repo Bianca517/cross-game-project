@@ -207,7 +207,11 @@ function moveOpponentCard(card) {
     cardImage.style.transform = 'translate(-45%, -40%)';
     cardImage.style.transition = 'all 0.5s linear';
     cardImage.setAttribute('id', 'centeredDownCardOpponent');
+    
+    //change src to front
+    cardImage.src = `./assets/card-faces/${card}.png`;
 }
+
 
 function moveUserCards() {
     //console.log("can move your cards");
@@ -288,6 +292,7 @@ function hide() {
         }
         else {
             clearInterval(intervalID);
+            setTimeout(() => {img.style.display = "none";}, 2000);
         }
     });
 
@@ -307,6 +312,7 @@ function hide() {
         }
         else {
             clearInterval(intervalID);
+            setTimeout(() => {img.style.display = "none";}, 2000);
         }
     });
 }

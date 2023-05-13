@@ -100,6 +100,9 @@ export class GameLogicService {
         cardImg.src = "./assets/card-faces/back.jpg";
         cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
         document.getElementById("opponent-cards")?.append(cardImg);
+
+        //flip
+        cardImg.style.transform = "rotateY(180deg)";
     }
 
     for(let i = 0; i < 8; i++) {
