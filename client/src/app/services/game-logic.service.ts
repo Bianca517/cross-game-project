@@ -10,7 +10,7 @@ declare const createOpponentLicitationAlert:any;
 declare const waitForEvent:any;
 declare const stopTimer:any;
 declare const moveOpponentCard:any;
-declare const removeDownCards: any;
+declare const fadeOut: any;
 
 let opponentSum:number = 0;
 let yourSum:number = 0;
@@ -237,9 +237,9 @@ export class GameLogicService {
     for (let i = 0; i < 16; i++) {
       promiseChain = promiseChain.then(() => this.handleTurns());
 
-      /*if(i%2==1) {
-        removeDownCards(opponentCards[0]);
-      }*/
+      if(i%2==1) {
+        fadeOut();
+      }
     }
 
     await promiseChain;
