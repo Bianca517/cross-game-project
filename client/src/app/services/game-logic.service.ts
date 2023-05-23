@@ -40,8 +40,15 @@ let userTurn:boolean = true;
   providedIn: 'root'
 })
 export class GameLogicService {
+  deck: string[];
+  opponentCards: string[];
+  yourCards: string[];
 
-  constructor() { }
+  constructor() { 
+    this.deck = [];
+    this.opponentCards = [];
+    this.yourCards = [];
+  }
   
   async startGame() {
       console.log("start game");
