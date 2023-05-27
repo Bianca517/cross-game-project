@@ -16,6 +16,7 @@ declare const waitForEvent:any;
 declare const stopTimer:any;
 declare const moveOpponentCard:any;
 declare const fadeOut: any;
+declare const moveUserCard: any;
 
 let canRunTimer:boolean = false;
 let whatUserLicitated:string;
@@ -222,12 +223,10 @@ export class GameLogicService {
   async opponentTurnMove(userMoveOrNull: Nullable<String>) {
     await delay(1500);
     
-    console.log("calling best move");
     let opponentMove = this.AI.bestMove(userMoveOrNull);
-    console.log("end best move");
     this.removeSelectedCard(opponentMove.toString(), 'opponent-cards')
-    console.log("Opponend moved: ", opponentMove);
-    //console.log("new opp cards: ", this.globalVars.opponentCards);
+    moveOpponentCard(opponentMove); //frontend handler -> move card down
+    console.log("opponent moved ", opponentMove);
     await delay(1500);
     return opponentMove;
   }
@@ -242,18 +241,17 @@ export class GameLogicService {
     
     console.log("Resolved with " + resolvedEvent);
     if (resolvedEvent == "Timer ended!") { //if user did not choose a card in the given time, a random card will be thrown on his behalf
-      console.log("da random");
       const userAllowedCards: String[] = this.AI.whatYouCanMove(downCardByOpponent, this.globalVars.yourCards);
-      console.log("ce are voie sa dea user", userAllowedCards);
       userChosenCard = userAllowedCards[Math.floor(Math.random() * userAllowedCards.length)];
-      console.log("ce o dat user random", userChosenCard);
+      await moveUserCard(userChosenCard);
     }
     else {
       userChosenCard = resolvedEvent.toString();
+      await moveUserCard(userChosenCard);
     }
 
     this.removeSelectedCard(userChosenCard.toString(), 'your-cards');
-    console.log(this.globalVars.yourCards);
+    console.log("user moved ", userChosenCard);
     return Promise.resolve(userChosenCard);
   }
 
@@ -262,22 +260,27 @@ export class GameLogicService {
     let opponentChosenCard: String = "";
 
     console.log("in handle round");
+    console.log("USER TURN ", userTurn);
     if(userTurn == true) {
       //let user move
       this.turnOffOrOnUserTurn(userTurn);
       userChosenCard = await this.userTurnMove(null);
       
+      userTurn = !userTurn;
+      console.log("USER TURN ", userTurn);
       //let opponent move
-      this.turnOffOrOnUserTurn(!userTurn);
+      this.turnOffOrOnUserTurn(userTurn);
       opponentChosenCard = await this.opponentTurnMove(userChosenCard);
     }
     else {
       //let opponent move
       this.turnOffOrOnUserTurn(userTurn);
       opponentChosenCard = await this.opponentTurnMove(null);
-
+      
+      userTurn = !userTurn;
+      console.log("USER TURN ", userTurn);
       //let user move
-      this.turnOffOrOnUserTurn(!userTurn);
+      this.turnOffOrOnUserTurn(userTurn);
       userChosenCard = await this.userTurnMove(opponentChosenCard);
     }
 
@@ -289,11 +292,11 @@ export class GameLogicService {
 
     for(let i : number = 0; i < this.globalVars.yourCards.length; i++) {
       promiseChain = promiseChain.then(async () => {
-        console.log("USER TURN ", userTurn);
         let firstPlayerInRound = (userTurn == false) ? 1 : -1; 
         const [userChosenCard, opponentChosenCard] = await this.handleRound();
         const firstPlayerInNextRound = this.AI.checkRoundWinner(userChosenCard, opponentChosenCard, firstPlayerInRound)[0];
         userTurn = (firstPlayerInNextRound == 1) ? false : true;
+        await delay(1000);
         await fadeOut(); //2 cards down => disappear
       });
     }
