@@ -164,8 +164,6 @@ async function handleTromfPopUp() {
     
     clearTromfPopUp();
     canMoveUserCards();
-    //setTimeout(() => {moveOpponentCards(); moveUserCards();}, 1000);
-    //setTimeout(() => { moveUserCards();}, 1000);
     return chosenTromf;
 }
 
@@ -279,12 +277,12 @@ function fadeOut () {
 function hide() {
     //for opponent
     const imgList = document.querySelectorAll('#centeredDownCardOpponent');
-    console.log("img " + imgList);
+    //console.log("img " + imgList);
 
     imgList.forEach((img) => {
         opacityString = img.style.opacity;
         opacity = Number(opacityString);
-        console.log("opacity " + opacity);
+        //console.log("opacity " + opacity);
         if(opacity > 0) {
             setTimeout(() => {
             opacity = opacity - 0.1;
@@ -299,12 +297,12 @@ function hide() {
 
     //for user
     const imgListUser = document.querySelectorAll('#centeredDownCardUser');
-    console.log("img " + imgListUser);
+    //console.log("img " + imgListUser);
 
     imgListUser.forEach((img) => {
         opacityString = img.style.opacity;
         opacity = Number(opacityString);
-        console.log("opacity " + opacity);
+        //console.log("opacity " + opacity);
         if(opacity > 0) {
             setTimeout(() => {
             opacity = opacity - 0.1;
