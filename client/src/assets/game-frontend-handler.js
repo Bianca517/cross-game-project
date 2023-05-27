@@ -26,6 +26,7 @@ function createOpponentLicitationAlert(string) {
     alertEl.style.borderRadius = "5px";
     alertEl.style.opacity = 0;
     alertEl.style.fontFamily = 'Outfit';
+    alertEl.style.zIndex = 999;
 
     // Add the alert  to the document
     document.body.appendChild(alertEl);
@@ -75,17 +76,20 @@ function handleTimer(duration) {
   let timeLeft = duration;
 
   return new Promise((resolve) => {
-    const timer = setInterval(() => {
+    timerInterval = setInterval(() => {
       timeLeft--;
       console.log(timeLeft);
       if (timeLeft === 0) {
-        clearInterval(timer);
+        clearInterval(timerInterval);
         resolve('Timer ended!');
       }
     }, 1000);
   });
 }
 
+function stopTimer() {
+  clearInterval(timerInterval);
+}  
 /*
 function handleTimer(duration) {
     let timeLeft = duration;
@@ -167,10 +171,6 @@ function handleTimer(duration) {
     })
   }
   */
-  
-  function stopTimer() {
-    clearInterval(timerInterval);
-  }  
   
 function waitForLicitationEvent(buttonsClassName) {
     return new Promise(resolve => {
@@ -382,4 +382,45 @@ function hide() {
     });
 }
 
+function revealCommentToPickCard() {
+  // Get a reference to the comment-box element
+  const commentBox = document.querySelector('.comment-box');
+  commentBox.classList.remove('hidden');
+
+  console.log("APARE INDICATOR");
+
+  //make card deck clickable
+  const cardDeck = document.getElementById('remaining-card-deck');
+  cardDeck.style.pointerEvents = ""; /* enable click and hover events */
+}
+
+function hideCommentToPickCard() {
+  // Get a reference to the comment-box element
+  const commentBox = document.querySelector('.comment-box');
+  commentBox.classList.add('hidden');
+
+  console.log("DISPARE INDICATOR");
+
+  //make card deck unclickable
+  const cardDeck = document.getElementById('remaining-card-deck');
+  cardDeck.style.pointerEvents = 'none'; /* Disable click and hover events */
+}
+
+function hideRemainingCardsDeck() {
+  const cardDeck = document.getElementById('remaining-card-deck');
+  cardDeck.classList.add('hidden');
+}
+
+function waitForUserToPickCard() {
+  return new Promise((resolve) => {
+    const remainingCardDeck = document.getElementById("remaining-card-deck");
+
+    const clickHandler = () => {
+      resolve();
+      remainingCardDeck.removeEventListener("click", clickHandler);
+    };
+
+    remainingCardDeck.addEventListener("click", clickHandler);
+  });
+}
 //module.exports = {createOpponentLicitationAlert, handleTimer, handleLicitationPopUp, clearPopUp, moveOpponentCards, moveUserCards}

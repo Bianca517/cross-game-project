@@ -10,11 +10,43 @@
                 <div id="opponent-cards"></div>
             </div>
 
+            <div id="middle-div">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th id="text">Opponent</th>
+                      <th id="text">You</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td id="text">Total Points</td>
+                      <td id="points"></td>
+                      <td id="points"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div id="comment-box-container">
+                <div class="comment-box arrow-right bounce-right hidden">
+                  Pick a card!
+                </div>
+              </div>
+
+              <div id="remaining-card-deck-div">
+                <img id="remaining-card-deck" src = "../../assets/card-faces/back.jpg">
+              </div>
+            </div>
+
             <div id="your-div">
                 <h3>You:</h3>
                 <div id="your-cards"></div>
             </div>
         </div>
+    
         <div id="licitation-popup-container">
             <div id="licitation-popup">
               <h2>Liciteaza:</h2>
@@ -30,7 +62,7 @@
         </div>
         <div id="tromf-popup-container">
           <div id="tromf-popup">
-            <h2>Alege tromf:</h2>
+            <h2 style="color:black">Alege tromf:</h2>
             <div id="tromf-buttons-container">
               <button class="tromf-button" name="R">
                 <img src = "../../assets/card-types/rosu.jpg" style = "width: 50px;">
@@ -57,24 +89,6 @@
               <div id="timer"></div>
             </div>
           </div>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th id="text">Opponent</th>
-                  <th id="text">You</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td id="text">Total Points</td>
-                  <td id="points"></td>
-                  <td id="points"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-                       
+                 
     </body>
 </html>
