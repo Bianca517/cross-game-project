@@ -72,6 +72,22 @@ function appendTimerElement() {
 }
 
 function handleTimer(duration) {
+  let timeLeft = duration;
+
+  return new Promise((resolve) => {
+    const timer = setInterval(() => {
+      timeLeft--;
+      console.log(timeLeft);
+      if (timeLeft === 0) {
+        clearInterval(timer);
+        resolve('Timer ended!');
+      }
+    }, 1000);
+  });
+}
+
+/*
+function handleTimer(duration) {
     let timeLeft = duration;
   
     const timerCircle = document.getElementById("timer-container");
@@ -150,6 +166,7 @@ function handleTimer(duration) {
       }, 1000);
     })
   }
+  */
   
   function stopTimer() {
     clearInterval(timerInterval);
@@ -252,63 +269,75 @@ function moveOpponentCard(card) {
 }
 
 
-function canMoveUserCards() {
-    //console.log("can move your cards");
-   
-    const cardImages = document.querySelectorAll('#your-cards img');
+async function canMoveUserCards() {
+  //console.log("can move your cards");
+ 
+  const cardImages = document.querySelectorAll('#your-cards img');
 
-    //make the cards scalable on hover
-    //simulate this
-    /*
-    #your-cards img:hover {
-    transform: scale(1.1);
-    }
-    */
-    for(let i = 0; i < cardImages.length; i++) {
-        const card = cardImages[i];
+  //make the cards scalable on hover
+  //simulate this
+  /*
+  #your-cards img:hover {
+  transform: scale(1.1);
+  }
+  */
+  for(let i = 0; i < cardImages.length; i++) {
+      const card = cardImages[i];
 
-        card.addEventListener('mouseover', () => {
-            card.style.transform = 'scale(1.1)';
-          });
-          
-          card.addEventListener('mouseout', () => {
-            card.style.transform = 'none';
-          });
-    }
-
-    // Create a wrapper div
-    const wrapperDiv = document.createElement('div');
-    wrapperDiv.id = "wrapperDiv";
-    wrapperDiv.style.position = 'absolute';
-    wrapperDiv.style.top = '50%';
-    wrapperDiv.style.left = '60%';
-    wrapperDiv.style.transform = 'translate(-50%, -60%)';
-    document.body.appendChild(wrapperDiv);
-
-    // Move the images to the wrapper div when they are clicked
-    cardImages.forEach(cardImage => {
-        cardImage.addEventListener('click', () => {
-            cardImage.style.position = 'absolute';
-            cardImage.style.top = '50%';
-            cardImage.style.left = '60%';
-            cardImage.style.transform = 'translate(-50%, -60%)';
-            cardImage.style.transition = 'all 0.5s linear';
-            
-            //added a setTimeout function to delay the animation of the wrapperDiv 
-            //until after the image has been moved to the wrapper div
-            setTimeout(() => {
-                wrapperDiv.appendChild(cardImage);
-                cardImage.setAttribute('id', 'centeredDownCardUser');
-                cardImage.style.transform = 'translate(-50%, -60%)';
-                cardImage.style.transition = 'all 0.5s linear';
-                cardImage.style.opacity = '1';
-              }, 10);
+      card.addEventListener('mouseover', () => {
+          card.style.transform = 'scale(1.1)';
         });
-    });
+        
+        card.addEventListener('mouseout', () => {
+          card.style.transform = 'none';
+        });
+  }
 }
 
-function fadeOut () {
-    intervalID = setInterval(hide,200);
+function moveUserCard(card) {
+  //this function gets called when user did not chose a card in time
+  // Get the image element
+  const cardImage = document.querySelector(`#your-cards img[alt="${card}"]`);
+  console.log('Moving ' + card);
+  // Create a wrapper div
+  const wrapperDiv = document.createElement('div');
+  wrapperDiv.id = "wrapperDiv";
+  wrapperDiv.style.position = 'absolute';
+  wrapperDiv.style.top = '55%';
+  wrapperDiv.style.left = '60%';
+  document.body.appendChild(wrapperDiv);
+
+  // Move the image to the wrapper div w
+  cardImage.style.position = 'absolute';
+  cardImage.style.top = '55%';
+  cardImage.style.left = '60%';
+  cardImage.style.transform = 'translate(-55%, -60%)';
+  cardImage.style.transition = 'all 0.5s linear';
+         
+  //added a setTimeout function to delay the animation of the wrapperDiv 
+  //until after the image has been moved to the wrapper div
+  setTimeout(() => {
+      wrapperDiv.appendChild(cardImage);
+      cardImage.setAttribute('id', 'centeredDownCardUser');
+      cardImage.style.transform = 'translate(-55%, -60%)';
+      cardImage.style.transition = 'all 0.5s linear';
+      cardImage.style.opacity = '1';
+    }, 10);
+}
+
+async function fadeOut () {
+  //intervalID = setInterval(hide,200);
+
+  let centeredDownCardUser = document.getElementById("centeredDownCardUser");
+  let centeredDownCardOpponent = document.getElementById("centeredDownCardOpponent");
+  
+  centeredDownCardUser.classList.add("fade-out"); // Apply the fade-out class
+  centeredDownCardOpponent.classList.add("fade-out"); // Apply the fade-out class
+
+  setTimeout(function() {
+    centeredDownCardUser.parentNode.removeChild(centeredDownCardUser); // Remove the element from the DOM after the fade-out effect is complete
+    centeredDownCardOpponent.parentNode.removeChild(centeredDownCardOpponent); // Remove the element from the DOM after the fade-out effect is complete
+  }, 500); // Wait for 500ms (0.5s) to match the transition duration
 }
 
 function hide() {
@@ -324,7 +353,7 @@ function hide() {
             setTimeout(() => {
             opacity = opacity - 0.1;
             img.style.opacity = opacity;
-        }, 0);
+        }, 3000);
         }
         else {
             clearInterval(intervalID);
