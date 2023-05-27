@@ -17,6 +17,10 @@ declare const stopTimer:any;
 declare const moveOpponentCard:any;
 declare const fadeOut: any;
 declare const moveUserCard: any;
+declare const revealCommentToPickCard: any;
+declare const hideCommentToPickCard: any;
+declare const waitForUserToPickCard: any;
+declare const hideRemainingCardsDeck: any;
 
 let canRunTimer:boolean = false;
 let whatUserLicitated:string;
@@ -82,46 +86,54 @@ export class GameLogicService {
     //console.log(deck);
   }
 
+  addCardForPlayer(playerCards:string[]) {
+    let cardsId:string;
+    if(playerCards === this.globalVars.opponentCards) {
+      cardsId = 'opponent-cards';
+    } else {
+      cardsId = 'your-cards';
+    }
+
+    let currentCard = this.globalVars.deck.pop();
+
+    if(currentCard) {
+      playerCards.push(currentCard);
+      console.log("added ", currentCard, `to ${cardsId}`);
+    }
+    
+    //display all starting cards
+    //create image tag
+    let cardImg = document.createElement("img");
+    //cardImg.src = "./assets/card-faces/back.jpg";
+    cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+    cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
+    document.getElementById(cardsId)?.append(cardImg);
+
+    if(playerCards === this.globalVars.opponentCards) {
+      //flip
+      cardImg.style.transform = "rotateY(180deg)";
+      this.globalVars.opponentCards = playerCards;
+      console.log("opp cards ", this.globalVars.opponentCards);
+    }
+    else {
+      this.globalVars.yourCards = playerCards;
+      console.log("user cards ", this.globalVars.yourCards);
+    }
+  }
+
   dealCards() {
     //fiecare jucator va primi cate 8 carti
     for(let i = 0; i < 8; i++) {
-        let currentCard = this.globalVars.deck.pop();
-
-        if(currentCard) {
-          this.globalVars.opponentCards.push(currentCard);
-        }
-        
-        //display all starting cards
-        //create image tag
-        let cardImg = document.createElement("img");
-        //cardImg.src = "./assets/card-faces/back.jpg";
-        cardImg.src = "./assets/card-faces/" + currentCard + ".png";
-        cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
-        document.getElementById("opponent-cards")?.append(cardImg);
-
-        //flip
-        cardImg.style.transform = "rotateY(180deg)";
+      this.addCardForPlayer(this.globalVars.yourCards);
+      this.addCardForPlayer(this.globalVars.opponentCards);
     }
 
-    for(let i = 0; i < 8; i++) {
-        let currentCard = this.globalVars.deck.pop();
-
-        if(currentCard) {
-          this.globalVars.yourCards.push(currentCard);
-        }
-
-        //display all starting cards
-        //create image tag
-        let cardImg = document.createElement("img");
-        cardImg.src = "./assets/card-faces/" + currentCard + ".png";
-        cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
-        document.getElementById("your-cards")?.append(cardImg);
-    }
- 
     //console.log(opponentCards);
     //console.log(yourCards);
     this.globalVars.yourSum = this.calculateSumUser();
     this.globalVars.opponentSum = this.calculateSumOpponent();
+
+    console.log("cate au mai ramas", this.globalVars.deck.length);
   }
 
   getCardValue(card:string) {
@@ -289,19 +301,54 @@ export class GameLogicService {
 
   async handleGamePlay() {
     let promiseChain = Promise.resolve();
+    const numberOfTotalRounds = 15;
 
-    for(let i : number = 0; i < this.globalVars.yourCards.length; i++) {
+    for(let i : number = 0; i < numberOfTotalRounds; i++) {
       promiseChain = promiseChain.then(async () => {
         let firstPlayerInRound = (userTurn == false) ? 1 : -1; 
         const [userChosenCard, opponentChosenCard] = await this.handleRound();
         const firstPlayerInNextRound = this.AI.checkRoundWinner(userChosenCard, opponentChosenCard, firstPlayerInRound)[0];
         userTurn = (firstPlayerInNextRound == 1) ? false : true;
+        //daca au mai ramas carti jos, roundWinner ia primul una si dupa urmatorul
+        if(this.globalVars.deck.length > 0) {
+          await this.pickCardsFromRemainingDeck(userTurn);
+        }
+        if(this.globalVars.deck.length == 0) {
+          hideRemainingCardsDeck();
+        }
         await delay(1000);
         await fadeOut(); //2 cards down => disappear
       });
     }
 
     await promiseChain;
+  }
+
+  async pickCardsFromRemainingDeck(userTurn: boolean) {
+    if(true == userTurn) {
+      //ia user
+      //reveal the comment to pick a card
+      revealCommentToPickCard();
+      //wait for the user to click on the deck and hide again the comment
+      await waitForUserToPickCard();
+      hideCommentToPickCard();
+      
+      this.addCardForPlayer(this.globalVars.yourCards);
+      //ia opponent
+      this.addCardForPlayer(this.globalVars.opponentCards);
+
+    }
+    else {
+      //ia opponent
+      this.addCardForPlayer(this.globalVars.opponentCards);
+      //ia user
+      //reveal the comment to pick a card
+      revealCommentToPickCard();
+      //wait for the user to click on the deck and hide again the comment
+      await waitForUserToPickCard();
+      hideCommentToPickCard();
+      this.addCardForPlayer(this.globalVars.yourCards);
+    }
   }
 
   turnOffOrOnUserTurn(isUserTurn:boolean) {

@@ -8,16 +8,19 @@
     font-weight: 400;
     line-height: 120%;
     letter-spacing: -0.015em;
-    color: black;
+    color: white;
     margin: 0;
     padding: 0;
 }
 
-#game-scene {
-    background-color: bisque;
+#game-scene div{
+    display: flex;
+    flex-direction: row;
 }
 
 #opponent-cards img {
+    display: flex;
+    flex-direction: row;
     height: 159px;
     width: 107px;
     margin: 5px;
@@ -25,6 +28,12 @@
     border-radius: 10%;
     z-index: 1;
     transition: all 0.5s linear;
+}
+
+#middle-div div {
+    flex-direction: row;
+    height: 100px;
+    width: 100%;
 }
 
 /*
@@ -49,9 +58,10 @@
 */
 
 #opponent-div div {
+    display: flex;
+    flex-direction: row;
     top: 0;
     left: 0;
-    background-color: bisque;
 }
 
 #your-div {
@@ -63,7 +73,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    background-color: bisque;
 }
 
 #your-div h2{
@@ -72,11 +81,74 @@
 }
 
 #opponent-div h3{
-    background-color: bisque;
     top: 0;
     left: 0;
 }
 
+#remaining-card-deck-div {
+    width: 100px !important;
+    padding-right: 50px;
+    display: flex !important;
+    flex-direction: row-reverse !important;
+}
+
+#remaining-card-deck {
+    height: 150px;
+    width: 100px;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+#remaining-card-deck:hover,
+#remaining-card-deck:active {
+  transform: scale(1.1);
+}
+
+#comment-box-container {
+    margin-top: 50px;
+    width: 100px !important;
+    margin-right: 15px;
+}
+
+.comment-box {
+    width: 200px !important;
+    height: 20px !important;
+    background-color: white;
+    color: black;
+    padding: 5px;
+    position: relative;
+}  
+
+.comment-box.arrow-right:after {
+    content: " ";
+    position: absolute;
+    right: -10px;
+    top: 5px;
+    border-top: 10px solid transparent;
+    border-right: none;
+    border-left: 10px solid white;
+    border-bottom: 10px solid transparent;
+}
+
+@keyframes bounceRight {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+  
+.bounce-right {
+  animation: bounceRight 1s infinite;
+}
+  
+.hidden {
+    display: none !important;
+}
 /**************** LICITATION-POP-UP ****************/
 
 #licitation-popup-container {
@@ -85,6 +157,7 @@
     left: 0;
     right: 0;
     bottom: 0;
+    color: black;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
@@ -218,7 +291,6 @@
 .table-container {
     top: 0;
     right: 0%;
-    position: absolute;
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
