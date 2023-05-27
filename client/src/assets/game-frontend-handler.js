@@ -7,7 +7,9 @@ var tromfPopupContainer;
 var parentOfTromfPopupContainer;
 
 var canRunTimer = false;
-var timerInterval;
+
+var opacity = 0;
+var intervalID = 0;
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -71,50 +73,88 @@ function appendTimerElement() {
 
 function handleTimer(duration) {
     let timeLeft = duration;
-    
-    //let ss, timerText = appendTimerElement();
+  
     const timerCircle = document.getElementById("timer-container");
     const timerDiv = document.createElement("div");
     timerDiv.className = "timer-container circle";
-
+  
     document.body.appendChild(timerDiv);
-
+  
     const timerText = document.createElement("span");
     timerText.style.color = "black";
     timerText.style.fontSize = "2.5em";
     timerText.style.position = "absolute";
-    timerText.style.left = "95.5%";
-    timerText.style.top = "41%";
+    timerText.style.left = "95.4%";
+    timerText.style.top = "41.3%";
     timerText.style.transform = "translateX(-50%)";
-
+  
     timerDiv.appendChild(timerText);
-
+  
     let ss = document.getElementById('ss');
 
-    return new Promise( resolve => {
-        timerInterval = setInterval( () => {
-
-            ss.style.strokeDashoffset = 440 - (440 * timeLeft)/30;
-            timerText.textContent = "0" + ":" + timeLeft;
-            
-            console.log("Time left: " + timeLeft);
-
-            timeLeft--;
-            console.log(timeLeft);
-            if(timeLeft <= 0) {
-                clearInterval(timerInterval);
-                //console.log("Timer ended!");
-                resolve("Timer ended!");
-                timerText.textContent = "";
+    return new Promise(resolve => {
+      timerInterval = setInterval(() => {
+        ss.style.strokeDashoffset = 440 - (440 * timeLeft) / 30;
+        timerText.textContent = `0:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
+  
+        console.log("Time left: " + timeLeft);
+    
+        if (timeLeft < 0) {
+          clearInterval(timerInterval);
+          //console.log("Timer ended!");
+  
+          // Check if any card has been moved
+          let isCardMoved = false;
+          const cardImages = document.querySelectorAll('#your-cards img');
+          cardImages.forEach(cardImage => {
+            if (cardImage.parentElement.id === 'wrapperDiv') {
+              isCardMoved = true;
             }
-        }, 1000);
+          });
+  
+          if (!isCardMoved) {
+            setTimeout(() => {
+              // Select a random card to move
+              const randomIndex = Math.floor(Math.random() * cardImages.length);
+              const cardToMove = cardImages[randomIndex];
+  
+              // Move the card to the wrapper div
+              cardToMove.style.position = 'absolute';
+              cardToMove.style.top = '50%';
+              cardToMove.style.left = '60%';
+              cardToMove.style.transform = 'translate(-50%, -60%)';
+              cardToMove.style.transition = 'all 0.5s linear';
+  
+              const wrapperDiv = document.createElement('div');
+              wrapperDiv.id = "wrapperDiv";
+              wrapperDiv.style.position = 'absolute';
+              wrapperDiv.style.top = '50%';
+              wrapperDiv.style.left = '60%';
+              wrapperDiv.style.transform = 'translate(-50%, -60%)';
+              document.body.appendChild(wrapperDiv);
+  
+              wrapperDiv.appendChild(cardToMove);
+              cardToMove.setAttribute('id', 'centeredDownCardUser');
+              cardToMove.style.transform = 'translate(-50%, -60%)';
+              cardToMove.style.transition = 'all 0.5s linear';
+              cardToMove.style.opacity = '1';
+            }, 10);
+          }
+  
+          resolve("Timer ended!");
+          timerText.textContent = "";
+        }
+  
+        timeLeft--;
+        console.log(timeLeft);
+      }, 1000);
     })
-}
-
-function stopTimer() {
+  }
+  
+  function stopTimer() {
     clearInterval(timerInterval);
-}
-
+  }  
+  
 function waitForLicitationEvent(buttonsClassName) {
     return new Promise(resolve => {
       const buttons = document.getElementsByClassName(`${buttonsClassName}`);
@@ -266,9 +306,6 @@ function canMoveUserCards() {
         });
     });
 }
-
-var opacity = 0;
-var intervalID = 0;
 
 function fadeOut () {
     intervalID = setInterval(hide,200);
