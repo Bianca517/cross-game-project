@@ -162,6 +162,7 @@ function waitForLicitationEvent(buttonsClassName) {
         for (const button of buttons) {
           button.removeEventListener('click', listener);
         }
+        console.log("apasat", event);
         resolve(event);
       };
       for (const button of buttons) {
@@ -198,13 +199,11 @@ async function handleTromfPopUp() {
     
     const event = await waitForLicitationEvent("tromf-button");
 
-    const chosenTromf = event.target.getAttribute("name");
+    const chosenTromf = event.currentTarget.getAttribute('name');
     console.log(`Chosen tromf: ${chosenTromf}`);
     
     clearTromfPopUp();
-    moveUserCards();
-    //setTimeout(() => {moveOpponentCards(); moveUserCards();}, 1000);
-    //setTimeout(() => { moveUserCards();}, 1000);
+    canMoveUserCards();
     return chosenTromf;
 }
 
@@ -253,7 +252,7 @@ function moveOpponentCard(card) {
 }
 
 
-function moveUserCards() {
+function canMoveUserCards() {
     //console.log("can move your cards");
    
     const cardImages = document.querySelectorAll('#your-cards img');
