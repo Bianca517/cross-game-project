@@ -394,7 +394,7 @@ export class GameLogicService {
     if (timerContainer !== null) {
       timerContainer.style.display = "flex";
     }
-    return handleTimer(3);
+    return handleTimer(100);
   }
 
   async waitForCardChosenEvent(idCards:string) {
@@ -419,10 +419,6 @@ export class GameLogicService {
         const card = cards[i];
         card.addEventListener('click', listener);
       }
-
-      setTimeout(() => {
-        reject("Timeout");
-      }, 5000); // reject after 5 seconds if the promise hasn't resolved yet
     });
   }
 
