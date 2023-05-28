@@ -463,4 +463,12 @@ function hideAnnouncementTags() {
   announcementTag.classList.add('hidden');
 }
 
+function showResultPopup(text) {
+  console.log("intention to show result");
+  let container = document.getElementById("resultContainer");
+  container.style.display = "block";
+  let containerText = document.getElementById('resultContainerText');
+  containerText.innerText = text;
+}
+
 //module.exports = {createOpponentLicitationAlert, handleTimer, handleLicitationPopUp, clearPopUp, moveOpponentCards, moveUserCards}

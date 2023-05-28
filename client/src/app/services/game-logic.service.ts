@@ -3,6 +3,7 @@ import { json } from 'body-parser';
 import { GlobalGameVariablesService } from './global-game-variables.service';
 import { OpponentAiMoveService } from './opponent-ai-move.service';
 import { ScoreHandlingServiceService } from './score-handling-service.service';
+import { GameConfigurationService } from './game-configuration.service';
 
 type Nullable<T> = T | null;
 
@@ -23,10 +24,12 @@ declare const hideCommentToPickCard: any;
 declare const waitForUserToPickCard: any;
 declare const hideRemainingCardsDeck: any;
 declare const hideAnnouncementTags: any;
+declare const showResultPopup: any;
 
 let canRunTimer:boolean = false;
 let userTurn:boolean = true;
 let opponentPotentialTromf: string;
+let replay:boolean = true;
 
 @Injectable({
   providedIn: 'root'
@@ -35,10 +38,31 @@ export class GameLogicService {
 
   constructor(private globalVars: GlobalGameVariablesService, 
     private AI: OpponentAiMoveService, 
-    private ScoreHandlingService: ScoreHandlingServiceService
+    private ScoreHandlingService: ScoreHandlingServiceService,
+    private GameConfig: GameConfigurationService
     ) { }
   
+  
+  initVariables() {
+    this.globalVars.deck = [];
+    this.globalVars.yourCards = [];
+    this.globalVars.opponentCards = [];
+    this.globalVars.yourSum = 0;
+    this.globalVars.opponentSum = 0;
+    this.globalVars.userLicitation = "";
+    this.globalVars.opponentLicitation = "";
+  }
+
   async startGame() {
+    this.GameConfig.gameTotalPoints = 0;
+    console.log("GTT ", this.GameConfig.gameTotalPoints);
+    this.initVariables();
+    while(replay == true) {
+      await this.startRound();
+    }
+  }
+
+  async startRound() {
       console.log("start game");
       this.buildDeck();
       this.shuffleDeck();
@@ -58,6 +82,7 @@ export class GameLogicService {
       await this.handleGamePlay();
 
       this.handleEndOfGame();
+      await delay(1500);
   }
 
   buildDeck() {
@@ -299,7 +324,7 @@ export class GameLogicService {
 
   async handleGamePlay() {
     let promiseChain = Promise.resolve();
-    const numberOfTotalRounds = 12;
+    const numberOfTotalRounds = 1;
 
     for(let i : number = 0; i < numberOfTotalRounds; i++) {
       promiseChain = promiseChain.then(async () => {
@@ -359,6 +384,24 @@ export class GameLogicService {
   handleEndOfGame() {
     console.log("Game ended!");
     this.ScoreHandlingService.checkScoresAgainstLicitation();
+    
+    //check if any of the players reached total points of the game
+    if(this.globalVars.totalOpponentPoints >= this.GameConfig.gameTotalPoints || this.globalVars.totalUserPoints >= this.GameConfig.gameTotalPoints) {
+      replay = false;
+
+      if(this.globalVars.totalOpponentPoints > this.globalVars.totalUserPoints) {
+        showResultPopup("You lost :(");
+      }
+      else if(this.globalVars.totalOpponentPoints < this.globalVars.totalUserPoints) {
+        showResultPopup("You won :)");
+      }
+      else {
+        showResultPopup("It's a tie :/");
+      }
+    }
+    else {
+      replay = true;
+    }
   }
 
   turnOffOrOnUserTurn(isUserTurn:boolean) {

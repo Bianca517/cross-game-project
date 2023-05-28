@@ -110,7 +110,13 @@ export class ScoreHandlingServiceService {
           break;
         }
       }
-      roundVerdict = lastSmallerValue[1];
+
+      if(lastSmallerValue[0] == 'Pas') {
+        roundVerdict = 0;
+      }
+      else {
+        roundVerdict = Number(lastSmallerValue[0]);
+      }
     }
     return roundVerdict;
   }
