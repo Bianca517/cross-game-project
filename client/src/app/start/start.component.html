@@ -26,9 +26,9 @@
                     <p class="side-panel-text">Choose game mode: </p>
                     
                     <ul class="point-options">
-                        <li class="selected">Easy</li>
-                        <li>Medium</li>
-                        <li>Hard</li>
+                        <li id="easy" class="selected" (click)="selectGameMode($event.target)">Easy</li>
+                        <li id="medium" (click)="selectGameMode($event.target)">Medium</li>
+                        <li id="hard" (click)="selectGameMode($event.target)">Hard</li>
                     </ul>
                 </div>
 
