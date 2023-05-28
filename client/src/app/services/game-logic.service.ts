@@ -1,4 +1,11 @@
 import { Injectable } from '@angular/core';
+import { json } from 'body-parser';
+import { GlobalGameVariablesService } from './global-game-variables.service';
+import { OpponentAiMoveService } from './opponent-ai-move.service';
+import { ScoreHandlingServiceService } from './score-handling-service.service';
+import { GameConfigurationService } from './game-configuration.service';
+
+type Nullable<T> = T | null;
 
 declare const delay:any;
 declare const handleLicitationPopUp:any;
@@ -11,46 +18,50 @@ declare const waitForEvent:any;
 declare const stopTimer:any;
 declare const moveOpponentCard:any;
 declare const fadeOut: any;
+declare const moveUserCard: any;
+declare const revealCommentToPickCard: any;
+declare const hideCommentToPickCard: any;
+declare const waitForUserToPickCard: any;
+declare const hideRemainingCardsDeck: any;
+declare const hideAnnouncementTags: any;
+declare const showResultPopup: any;
 
-let opponentSum:number = 0;
-let yourSum:number = 0;
-
-let deck:string[] = []; 
-
-let opponentCards:string[] = [];
-let yourCards:string[] = [];
 let canRunTimer:boolean = false;
-
-const licitationThresholds: {[key: string]: number} = {
-    "Pas" : 0,
-    "1" : 33,
-    "2" : 66,
-    "3" : 99,
-    "4" : 132,
-    "5" : 165,
-    "6" : 198
-}
-
-let whatUserLicitated:string;
-let chosenTromf:string;
 let userTurn:boolean = true;
+let opponentPotentialTromf: string;
+let replay:boolean = true;
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameLogicService {
-  deck: string[];
-  opponentCards: string[];
-  yourCards: string[];
-  
 
-  constructor() { 
-    this.deck = [];
-    this.opponentCards = [];
-    this.yourCards = [];
-  }
+  constructor(private globalVars: GlobalGameVariablesService, 
+    private AI: OpponentAiMoveService, 
+    private ScoreHandlingService: ScoreHandlingServiceService,
+    private GameConfig: GameConfigurationService
+    ) { }
   
+  
+  initVariables() {
+    this.globalVars.deck = [];
+    this.globalVars.yourCards = [];
+    this.globalVars.opponentCards = [];
+    this.globalVars.yourSum = 0;
+    this.globalVars.opponentSum = 0;
+    this.globalVars.userLicitation = "";
+    this.globalVars.opponentLicitation = "";
+  }
+
   async startGame() {
+    console.log("GTT ", this.GameConfig.gameTotalPoints);
+    this.initVariables();
+    while(replay == true) {
+      await this.startRound();
+    }
+  }
+
+  async startRound() {
       console.log("start game");
       this.buildDeck();
       this.shuffleDeck();
@@ -68,6 +79,9 @@ export class GameLogicService {
       
       //after this, userTurn is set for the first round
       await this.handleGamePlay();
+
+      this.handleEndOfGame();
+      await delay(1500);
   }
 
   buildDeck() {
@@ -76,64 +90,72 @@ export class GameLogicService {
 
     for(let i = 0; i < types.length; i++) {
         for(let j = 0; j < values.length; j++) {
-            deck.push(values[j] + '-' + types[i]);
+            this.globalVars.deck.push(values[j] + '-' + types[i]);
         }
     }
     //console.log(deck);
   }
 
   shuffleDeck() {
-    for(let i = 0; i < deck.length; i++) {
-        let j = Math.floor(Math.random() * deck.length); // (0-1) * 24
-        let temp = deck[i];
-        deck[i] = deck[j];
-        deck[j] = temp;
+    for(let i = 0; i < this.globalVars.deck.length; i++) {
+        let j = Math.floor(Math.random() * this.globalVars.deck.length); // (0-1) * 24
+        let temp = this.globalVars.deck[i];
+        this.globalVars.deck[i] = this.globalVars.deck[j];
+        this.globalVars.deck[j] = temp;
     }
     //console.log(deck);
+  }
+
+  addCardForPlayer(playerCards:string[]) {
+    let cardsId:string;
+    if(playerCards === this.globalVars.opponentCards) {
+      cardsId = 'opponent-cards';
+    } else {
+      cardsId = 'your-cards';
+    }
+
+    let currentCard = this.globalVars.deck.pop();
+
+    if(currentCard) {
+      playerCards.push(currentCard);
+    }
+    
+    //display all starting cards
+    //create image tag
+    let cardImg = document.createElement("img");
+    //cardImg.src = "./assets/card-faces/back.jpg";
+    cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+    cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
+    document.getElementById(cardsId)?.append(cardImg);
+
+    if(playerCards === this.globalVars.opponentCards) {
+      //flip
+      cardImg.style.transform = "rotateY(180deg)";
+      this.globalVars.opponentCards = playerCards;
+      //console.log("opp cards ", this.globalVars.opponentCards);
+    }
+    else {
+      this.globalVars.yourCards = playerCards;
+      //console.log("user cards ", this.globalVars.yourCards);
+    }
   }
 
   dealCards() {
     //fiecare jucator va primi cate 8 carti
     for(let i = 0; i < 8; i++) {
-        let currentCard = deck.pop();
-
-        if(currentCard) {
-          opponentCards.push(currentCard);
-        }
-        
-        //display all starting cards
-        //create image tag
-        let cardImg = document.createElement("img");
-        cardImg.src = "./assets/card-faces/back.jpg";
-        cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
-        document.getElementById("opponent-cards")?.append(cardImg);
-
-        //flip
-        cardImg.style.transform = "rotateY(180deg)";
+      this.addCardForPlayer(this.globalVars.yourCards);
+      this.addCardForPlayer(this.globalVars.opponentCards);
     }
 
-    for(let i = 0; i < 8; i++) {
-        let currentCard = deck.pop();
-
-        if(currentCard) {
-          yourCards.push(currentCard);
-        }
-
-        //display all starting cards
-        //create image tag
-        let cardImg = document.createElement("img");
-        cardImg.src = "./assets/card-faces/" + currentCard + ".png";
-        cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
-        document.getElementById("your-cards")?.append(cardImg);
-    }
- 
     //console.log(opponentCards);
     //console.log(yourCards);
-    yourSum = this.calculateSumUser();
-    opponentSum = this.calculateSumOpponent();
+    //this.globalVars.yourSum = this.calculateSumUser();
+    this.globalVars.opponentSum = this.calculateSumOpponent();
+
+    //console.log("cate au mai ramas", this.globalVars.deck.length);
   }
 
-  getValue(card:string) {
+  getCardValue(card:string) {
     let data = card.split("-")[0];
     if(data === '9') {
         data = '0';
@@ -141,10 +163,14 @@ export class GameLogicService {
     return parseInt(data);
   }
 
+  getCardColor(card: String) {
+    return card.split('-')[1];
+  }
+
   calculateSumUser() {
     let sum = 0;
     for(let i = 0; i < 8; i++) {
-        sum += this.getValue(yourCards[i]);
+        sum += this.getCardValue(this.globalVars.yourCards[i]);
     }
     console.log("user score" + sum);
     return sum;
@@ -153,50 +179,60 @@ export class GameLogicService {
   calculateSumOpponent() {
     let sum = 0;
     for(let i = 0; i < 8; i++) {
-        sum += this.getValue(opponentCards[i]);
+        sum += this.getCardValue(this.globalVars.opponentCards[i]);
     }
     console.log("opponent score" + sum);
     return sum;
   }
 
   async userLicitation() {
-    whatUserLicitated = await handleLicitationPopUp();
+    this.globalVars.userLicitation = await handleLicitationPopUp();
 
     console.log("user licitation finished");
   }
 
   async opponentLicitation() {
     //presupunem ca ia toate mainile
-    let sumWithAnunt = opponentSum;
-    let whatOpponentLicitated = 'Pas';
+    let sumWithAnunt = this.globalVars.opponentSum;
+    let opponentAnnouncements:string[] = [];
     //console.log("opponent sum without anunt" + sumWithAnunt);
+
+    console.log(this.globalVars.opponentCards);
     //search for anunt
-    if("3-D" in opponentCards && "4-D" in opponentCards) {
-        sumWithAnunt += 20;
-    }
-    if("3-G" in opponentCards && "4-G" in opponentCards) {
-        sumWithAnunt += 20;
-    }
-    if("3-R" in opponentCards && "4-D" in opponentCards) {
-        sumWithAnunt += 20;
-    }
-    if("3-V" in opponentCards && "4-D" in opponentCards) {
-        sumWithAnunt += 20;
+    for (let cardType of ['D', 'G', 'R', 'V']) {
+      let treiar = "3-" + cardType;
+      let patrar = "4-" + cardType;
+
+      if((this.globalVars.opponentCards.includes(treiar)) && (this.globalVars.opponentCards.includes(patrar))) {
+        //THIS LOGIC MUST BE ENHANCED!!!!
+        opponentAnnouncements.push(cardType);
+        if(this.globalVars.chosenTromf == cardType) {
+          sumWithAnunt += 40;
+        }
+        else {
+          sumWithAnunt += 20;
+        }
+      } 
     }
 
-    //console.log("opponent sum with anunt" + sumWithAnunt);
+    console.log("opponent sum with anunt" + sumWithAnunt);
+
+    opponentPotentialTromf = this.AI.chooseTromf(opponentAnnouncements);
     //find the smallest licitation threshold
-    for (const [key, value] of Object.entries(licitationThresholds)) {
+    for (const [key, value] of Object.entries(this.globalVars.licitationThresholds)) {
         if (value < sumWithAnunt) {
-            whatOpponentLicitated = key;
+            this.globalVars.opponentLicitation = key;
         }
         else break;
     }
 
-    createOpponentLicitationAlert(`Opponent licitated ${whatOpponentLicitated}`);
-    await delay(1000);
+    createOpponentLicitationAlert(`Opponent licitated ${this.globalVars.opponentLicitation}`);
+    await delay(1600);
 
-    if(licitationThresholds[whatOpponentLicitated] < licitationThresholds[whatUserLicitated]) {
+    //reset opponent's sum
+    this.globalVars.opponentSum = 0;
+
+    if(this.globalVars.licitationThresholds[this.globalVars.opponentLicitation] < this.globalVars.licitationThresholds[this.globalVars.userLicitation]) {
       userTurn = true;
     }
     else {
@@ -206,68 +242,173 @@ export class GameLogicService {
   }
 
   async chooseTromf() {
-    chosenTromf = await handleTromfPopUp();
-    console.log("tromf chosed");
+    if(true == userTurn) {
+      this.globalVars.chosenTromf = await handleTromfPopUp();
+    }
+    else {
+      createOpponentLicitationAlert(`Opponent chose tromf ${opponentPotentialTromf}`);
+      await delay(1500);
+    }
   }
 
-  async handleTurns() {
-    let cardsId = "";
-    this.turnOffOrOnUserTurn(userTurn);
+  async opponentTurnMove(userMoveOrNull: Nullable<String>) {
+    await delay(1500);
+    
+    let opponentMove = this.AI.bestMove(userMoveOrNull);
+    this.removeSelectedCard(opponentMove.toString(), 'opponent-cards')
+    moveOpponentCard(opponentMove); //frontend handler -> move card down
+    console.log("Opponent moved ", opponentMove);
+    await delay(1500);
+    return opponentMove;
+  }
 
-    if(userTurn == true) {
-      cardsId = "your-cards";
+  async userTurnMove(downCardByOpponent: Nullable<String>): Promise<String> {
+    let userChosenCard: String;
+    //if user chose a card or the timer ended => switch turns
+    const userChoseCard = this.waitForCardChosenEvent('your-cards');
+    const timerHasExpired = this.startTimer();
+    const resolvedEvent = await Promise.race([timerHasExpired, userChoseCard]);
+    stopTimer();
+    
+    //console.log("Resolved with " + resolvedEvent);
+    if (resolvedEvent == "Timer ended!") { //if user did not choose a card in the given time, a random card will be thrown on his behalf
+      const userAllowedCards: String[] = this.AI.whatYouCanMove(downCardByOpponent, this.globalVars.yourCards);
+      userChosenCard = userAllowedCards[Math.floor(Math.random() * userAllowedCards.length)];
+      await moveUserCard(userChosenCard);
     }
     else {
-      cardsId = "opponent-cards"
+      userChosenCard = resolvedEvent.toString();
+      await moveUserCard(userChosenCard);
     }
 
-    if(userTurn == true) {
-      //daca user/opponent a ales o carte sau timer ended => switch turns
-      const cardWasChosen = this.waitForCardChosenEvent(cardsId);
-      const timerHasExpired = this.startTimer();
+    this.removeSelectedCard(userChosenCard.toString(), 'your-cards');
+    console.log("user moved ", userChosenCard);
+    return Promise.resolve(userChosenCard);
+  }
 
-      await Promise.race([timerHasExpired, cardWasChosen]);
+  async handleRound() {
+    let userChosenCard: String = "";
+    let opponentChosenCard: String = "";
+
+    //hide any announcement tags from last round
+    hideAnnouncementTags();
+
+    console.log("in handle round");
+    console.log("USER TURN ", userTurn);
+    if(userTurn == true) {
+      //let user move
+      this.turnOffOrOnUserTurn(userTurn);
+      userChosenCard = await this.userTurnMove(null);
       
-      stopTimer();
-      //console.log("Resolved with " + value);
+      userTurn = !userTurn;
+      console.log("USER TURN ", userTurn);
+      //let opponent move
+      this.turnOffOrOnUserTurn(userTurn);
+      opponentChosenCard = await this.opponentTurnMove(userChosenCard);
     }
     else {
-      await delay(1500);
-      this.moveOpponent();
-      await delay(1500);
+      //let opponent move
+      this.turnOffOrOnUserTurn(userTurn);
+      opponentChosenCard = await this.opponentTurnMove(null);
+      
+      userTurn = !userTurn;
+      console.log("USER TURN ", userTurn);
+      //let user move
+      this.turnOffOrOnUserTurn(userTurn);
+      userChosenCard = await this.userTurnMove(opponentChosenCard);
     }
 
-    userTurn = !userTurn;
-    //console.log(yourCards);
-    console.log("Can switch users turn!");
+    return Promise.resolve([userChosenCard, opponentChosenCard]);
   }
 
   async handleGamePlay() {
     let promiseChain = Promise.resolve();
+    const numberOfTotalRounds = 12;
 
-    for (let i = 0; i < 16; i++) {
-      promiseChain = promiseChain.then(() => this.handleTurns());
+    for(let i : number = 0; i < numberOfTotalRounds; i++) {
+      promiseChain = promiseChain.then(async () => {
+        let firstPlayerInRound = (userTurn == false) ? 1 : -1; 
+        const [userChosenCard, opponentChosenCard] = await this.handleRound();
+        const firstPlayerInNextRound = this.AI.checkRoundWinner(userChosenCard, opponentChosenCard, firstPlayerInRound)[0];
+        //update the scores
+        this.ScoreHandlingService.addSumToWinnerOfRound(firstPlayerInRound, firstPlayerInNextRound, userChosenCard.toString(), opponentChosenCard.toString());
+        console.log("USER SUM: ", this.globalVars.yourSum);
+        console.log("OPP SUM: ", this.globalVars.opponentSum);
+        //who starts next round
+        userTurn = (firstPlayerInNextRound == 1) ? false : true;
+        
+        //daca au mai ramas carti jos, roundWinner ia primul una si dupa urmatorul
+        if(this.globalVars.deck.length > 0) {
+          await this.pickCardsFromRemainingDeck(userTurn);
+        }
+        if(this.globalVars.deck.length == 0) {
+          hideRemainingCardsDeck();
+        }
 
-      if(i%2==1) {
-        fadeOut();
-      }
+        await delay(1000);
+        await fadeOut(); //2 cards down => disappear
+      });
     }
 
     await promiseChain;
   }
 
-  moveOpponent() {
-    this.moveOpponentWhenOpponentFirst();
+  async pickCardsFromRemainingDeck(userTurn: boolean) {
+    if(true == userTurn) {
+      //ia user
+      //reveal the comment to pick a card
+      revealCommentToPickCard();
+      //wait for the user to click on the deck and hide again the comment
+      await waitForUserToPickCard();
+      hideCommentToPickCard();
+      
+      this.addCardForPlayer(this.globalVars.yourCards);
+      //ia opponent
+      this.addCardForPlayer(this.globalVars.opponentCards);
+
+    }
+    else {
+      //ia opponent
+      this.addCardForPlayer(this.globalVars.opponentCards);
+      //ia user
+      //reveal the comment to pick a card
+      revealCommentToPickCard();
+      //wait for the user to click on the deck and hide again the comment
+      await waitForUserToPickCard();
+      hideCommentToPickCard();
+      this.addCardForPlayer(this.globalVars.yourCards);
+    }
   }
 
-  moveOpponentWhenOpponentFirst() {
-    let randomIndex:number = Math.floor(Math.random() * opponentCards.length);
-    moveOpponentCard(opponentCards[randomIndex])
-    this.removeSelectedCard(opponentCards[randomIndex], "opponent-cards");
-  }
+  handleEndOfGame() {
+    console.log("Game ended!");
+    this.ScoreHandlingService.checkScoresAgainstLicitation();
+    
+    //check if any of the players reached total points of the game
+    if(this.globalVars.totalOpponentPoints >= this.GameConfig.gameTotalPoints || this.globalVars.totalUserPoints >= this.GameConfig.gameTotalPoints) {
+      replay = false;
 
-  moveOpponentWhenOpponentSecond() {
+      if(this.globalVars.totalOpponentPoints > this.globalVars.totalUserPoints) {
+        showResultPopup("You lost :(");
+      }
+      else if(this.globalVars.totalOpponentPoints < this.globalVars.totalUserPoints) {
+        showResultPopup("You won :)");
+      }
+      else {
+        showResultPopup("It's a tie :/");
+      }
 
+        // Navigate back to the start page after displaying the result popup
+      setTimeout(function() {
+        let currentUrl = window.location.href;
+        var lastIndex = currentUrl.lastIndexOf("/");
+        var newHref = currentUrl.substring(0, lastIndex + 1) + "start";
+        window.location.href = newHref; // Replace with the desired start page URL
+      }, 3000); // Adjust the delay (in milliseconds) before navigating
+    }
+    else {
+      replay = true;
+    }
   }
 
   turnOffOrOnUserTurn(isUserTurn:boolean) {
@@ -313,11 +454,11 @@ export class GameLogicService {
     if (timerContainer !== null) {
       timerContainer.style.display = "flex";
     }
-    return handleTimer(3);
+    return handleTimer(100);
   }
 
   async waitForCardChosenEvent(idCards:string) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const cards =  document.getElementById(`${idCards}`)?.getElementsByTagName('img') as HTMLCollectionOf<HTMLElement>;
       
       const listener = (event:MouseEvent) => {
@@ -326,9 +467,9 @@ export class GameLogicService {
           card.removeEventListener('click', listener);
         }
         const clickedCard = event.target as HTMLImageElement;
-        const cardName = clickedCard.src.split("/").pop()!;
-        console.log(cardName + " was clicked!");
-
+        let cardName = clickedCard.src.split("/").pop()!;
+        //console.log(cardName + " was clicked!");
+        cardName = cardName.split('.')[0];
         //remove the selected card from user's/opponent's hand
         this.removeSelectedCard(cardName, idCards);
         resolve(cardName);
@@ -344,15 +485,15 @@ export class GameLogicService {
   removeSelectedCard(card:string, cardsId:string) {
     card = card.split('.')[0];
     if(cardsId === 'your-cards') {
-      const index = yourCards.indexOf(card, 0);
+      const index = this.globalVars.yourCards.indexOf(card, 0);
       if (index > -1) {
-        yourCards.splice(index, 1);
+        this.globalVars.yourCards.splice(index, 1);
       }
     }
     else {
-      const index = opponentCards.indexOf(card, 0);
+      const index = this.globalVars.opponentCards.indexOf(card, 0);
       if (index > -1) {
-        opponentCards.splice(index, 1);
+        this.globalVars.opponentCards.splice(index, 1);
       }
     }
   }

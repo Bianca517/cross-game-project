@@ -111,7 +111,7 @@ export class OpponentAiMoveService {
 
   minimax(downCard: String, depth: number, isMaximizing: boolean) {
     let result = this.checkWinner();
-    if ((result !== null) || (depth > 1000000)) {
+    if ((result !== null) || (depth > 90000000000000000000000000000000000000000000000000000000000000000)) {
         let score = scores[result];
         return score;
     }
