@@ -15,8 +15,8 @@ declare const clearTromfPopUp:any;
 export class GameComponent {
 
   constructor(private gameLogicService: GameLogicService) {
-
   }
+  
   ngOnInit(): void {
     clearLicitationPopUp();
     clearTromfPopUp();

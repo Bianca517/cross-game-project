@@ -254,7 +254,7 @@ function moveOpponentCards() {
 function moveOpponentCard(card) {
     // Get the image element
     const cardImage = document.querySelector(`#opponent-cards img[alt="${card}"]`);
-    console.log('Moving ' + card);
+    //console.log('Moving ' + card);
 
     // Change the position of the image to the center of the screen ONCE IT IS LOADED
     cardImage.style.position = 'absolute';
@@ -298,7 +298,7 @@ function moveUserCard(card) {
   //this function gets called when user did not chose a card in time
   // Get the image element
   const cardImage = document.querySelector(`#your-cards img[alt="${card}"]`);
-  console.log('Moving ' + card);
+  //console.log('Moving ' + card);
   // Create a wrapper div
   const wrapperDiv = document.createElement('div');
   wrapperDiv.id = "wrapperDiv";
@@ -322,6 +322,7 @@ function moveUserCard(card) {
       cardImage.style.transform = 'translate(-55%, -60%)';
       cardImage.style.transition = 'all 0.5s linear';
       cardImage.style.opacity = '1';
+      cardImage.style.pointerEvents = "none"; /* Disable click and hover events */
     }, 10);
 }
 
@@ -387,7 +388,7 @@ function revealCommentToPickCard() {
   const commentBox = document.querySelector('.comment-box');
   commentBox.classList.remove('hidden');
 
-  console.log("APARE INDICATOR");
+  //console.log("APARE INDICATOR");
 
   //make card deck clickable
   const cardDeck = document.getElementById('remaining-card-deck');
@@ -399,7 +400,7 @@ function hideCommentToPickCard() {
   const commentBox = document.querySelector('.comment-box');
   commentBox.classList.add('hidden');
 
-  console.log("DISPARE INDICATOR");
+  //console.log("DISPARE INDICATOR");
 
   //make card deck unclickable
   const cardDeck = document.getElementById('remaining-card-deck');
@@ -423,4 +424,51 @@ function waitForUserToPickCard() {
     remainingCardDeck.addEventListener("click", clickHandler);
   });
 }
+
+function updateRoundScoresInHTMLTable(opponentScore, userScore) {
+  let currentOpponentPointsElement = document.getElementById("current-opponent-points");
+  currentOpponentPointsElement.innerText = opponentScore;
+
+  let currentUserPointsElement = document.getElementById("current-user-points");
+  currentUserPointsElement.innerText = userScore;
+}
+
+function updateTotalScoresInHTMLTable(opponentScore, userScore) {
+  let totalOpponentPointsElement = document.getElementById("total-opponent-points");
+  totalOpponentPointsElement.innerText = opponentScore;
+
+  let totalUserPointsElement = document.getElementById("total-user-points");
+  totalUserPointsElement.innerText = userScore;
+} 
+
+function revealOpponentAnnouncement(announcement) {
+  revealAnnouncement('opponent-announcement', announcement);
+}
+
+function revealUserAnnouncement(announcement) {
+  revealAnnouncement('user-announcement', announcement);
+}
+
+function revealAnnouncement(id, announcement) {
+  const announcementTag = document.getElementById(id);
+  announcementTag.innerText = announcement;
+  announcementTag.classList.remove('hidden');
+}
+
+function hideAnnouncementTags() {
+  let announcementTag = document.getElementById('opponent-announcement');
+  announcementTag.classList.add('hidden');
+
+  announcementTag = document.getElementById('user-announcement');
+  announcementTag.classList.add('hidden');
+}
+
+function showResultPopup(text) {
+  console.log("intention to show result");
+  let container = document.getElementById("resultContainer");
+  container.style.display = "block";
+  let containerText = document.getElementById('resultContainerText');
+  containerText.innerText = text;
+}
+
 //module.exports = {createOpponentLicitationAlert, handleTimer, handleLicitationPopUp, clearPopUp, moveOpponentCards, moveUserCards}

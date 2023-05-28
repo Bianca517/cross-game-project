@@ -1,18 +1,47 @@
 <html>
     <head></head>
     <body id="start_body">
-<p class="title">Cross Game</p>
-<button routerLink="/game">Play Now</button>
-<img src="../../assets/images/start_image.png" alt='image'>
-<p class="level">Your Level</p>
-<div class="container"> 
-    <ul class="progressbar">
-       
-        <li class="active"></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-</div>
+        <div class="everything-container side-panel-open">
+            <div class="main-div">
+                <p class="title">Cross Game</p>
+                <button id="play-now-button" routerLink="/game">Play Now</button>
+                <img src="../../assets/images/start_image.png" alt='image'>
+                <p class="level">Your Level</p>
+
+                <div class="container"> 
+                    <ul class="progressbar">
+                        <li class="active"></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="side-panel-toggle" type="button">
+                Configure game details here
+            </button>
+            <div class="side-panel">
+                <div class="select-points">
+                    <p class="side-panel-text">Choose game mode: </p>
+                    
+                    <ul class="point-options">
+                        <li class="selected">Easy</li>
+                        <li>Medium</li>
+                        <li>Hard</li>
+                    </ul>
+                </div>
+
+                <div class="select-points">
+                    <p class="side-panel-text">The game will finish when either player will achieve: </p>
+                    
+                    <ul class="point-options">
+                        <li id="7p" class="selected" (click)="selectOption($event.target)">7 points</li>
+                        <li id="11p" (click)="selectOption($event.target)">11 points</li>
+                        <li id="21p" (click)="selectOption($event.target)">21 points</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 </body>
 </html>

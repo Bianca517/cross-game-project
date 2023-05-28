@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { json } from 'body-parser';
 import { GlobalGameVariablesService } from './global-game-variables.service';
 import { OpponentAiMoveService } from './opponent-ai-move.service';
+import { ScoreHandlingServiceService } from './score-handling-service.service';
+import { GameConfigurationService } from './game-configuration.service';
 
 type Nullable<T> = T | null;
 
@@ -21,30 +23,45 @@ declare const revealCommentToPickCard: any;
 declare const hideCommentToPickCard: any;
 declare const waitForUserToPickCard: any;
 declare const hideRemainingCardsDeck: any;
+declare const hideAnnouncementTags: any;
+declare const showResultPopup: any;
 
 let canRunTimer:boolean = false;
-let whatUserLicitated:string;
 let userTurn:boolean = true;
 let opponentPotentialTromf: string;
-
-const licitationThresholds: {[key: string]: number} = {
-    "Pas" : 0,
-    "1" : 33,
-    "2" : 66,
-    "3" : 99,
-    "4" : 132,
-    "5" : 165,
-    "6" : 198
-}
+let replay:boolean = true;
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameLogicService {
 
-  constructor(private globalVars: GlobalGameVariablesService, private AI: OpponentAiMoveService) { }
+  constructor(private globalVars: GlobalGameVariablesService, 
+    private AI: OpponentAiMoveService, 
+    private ScoreHandlingService: ScoreHandlingServiceService,
+    private GameConfig: GameConfigurationService
+    ) { }
   
+  
+  initVariables() {
+    this.globalVars.deck = [];
+    this.globalVars.yourCards = [];
+    this.globalVars.opponentCards = [];
+    this.globalVars.yourSum = 0;
+    this.globalVars.opponentSum = 0;
+    this.globalVars.userLicitation = "";
+    this.globalVars.opponentLicitation = "";
+  }
+
   async startGame() {
+    console.log("GTT ", this.GameConfig.gameTotalPoints);
+    this.initVariables();
+    while(replay == true) {
+      await this.startRound();
+    }
+  }
+
+  async startRound() {
       console.log("start game");
       this.buildDeck();
       this.shuffleDeck();
@@ -62,6 +79,9 @@ export class GameLogicService {
       
       //after this, userTurn is set for the first round
       await this.handleGamePlay();
+
+      this.handleEndOfGame();
+      await delay(1500);
   }
 
   buildDeck() {
@@ -98,7 +118,6 @@ export class GameLogicService {
 
     if(currentCard) {
       playerCards.push(currentCard);
-      console.log("added ", currentCard, `to ${cardsId}`);
     }
     
     //display all starting cards
@@ -113,11 +132,11 @@ export class GameLogicService {
       //flip
       cardImg.style.transform = "rotateY(180deg)";
       this.globalVars.opponentCards = playerCards;
-      console.log("opp cards ", this.globalVars.opponentCards);
+      //console.log("opp cards ", this.globalVars.opponentCards);
     }
     else {
       this.globalVars.yourCards = playerCards;
-      console.log("user cards ", this.globalVars.yourCards);
+      //console.log("user cards ", this.globalVars.yourCards);
     }
   }
 
@@ -130,10 +149,10 @@ export class GameLogicService {
 
     //console.log(opponentCards);
     //console.log(yourCards);
-    this.globalVars.yourSum = this.calculateSumUser();
+    //this.globalVars.yourSum = this.calculateSumUser();
     this.globalVars.opponentSum = this.calculateSumOpponent();
 
-    console.log("cate au mai ramas", this.globalVars.deck.length);
+    //console.log("cate au mai ramas", this.globalVars.deck.length);
   }
 
   getCardValue(card:string) {
@@ -167,7 +186,7 @@ export class GameLogicService {
   }
 
   async userLicitation() {
-    whatUserLicitated = await handleLicitationPopUp();
+    this.globalVars.userLicitation = await handleLicitationPopUp();
 
     console.log("user licitation finished");
   }
@@ -175,7 +194,6 @@ export class GameLogicService {
   async opponentLicitation() {
     //presupunem ca ia toate mainile
     let sumWithAnunt = this.globalVars.opponentSum;
-    let whatOpponentLicitated = 'Pas';
     let opponentAnnouncements:string[] = [];
     //console.log("opponent sum without anunt" + sumWithAnunt);
 
@@ -201,17 +219,20 @@ export class GameLogicService {
 
     opponentPotentialTromf = this.AI.chooseTromf(opponentAnnouncements);
     //find the smallest licitation threshold
-    for (const [key, value] of Object.entries(licitationThresholds)) {
+    for (const [key, value] of Object.entries(this.globalVars.licitationThresholds)) {
         if (value < sumWithAnunt) {
-            whatOpponentLicitated = key;
+            this.globalVars.opponentLicitation = key;
         }
         else break;
     }
 
-    createOpponentLicitationAlert(`Opponent licitated ${whatOpponentLicitated}`);
+    createOpponentLicitationAlert(`Opponent licitated ${this.globalVars.opponentLicitation}`);
     await delay(1600);
 
-    if(licitationThresholds[whatOpponentLicitated] < licitationThresholds[whatUserLicitated]) {
+    //reset opponent's sum
+    this.globalVars.opponentSum = 0;
+
+    if(this.globalVars.licitationThresholds[this.globalVars.opponentLicitation] < this.globalVars.licitationThresholds[this.globalVars.userLicitation]) {
       userTurn = true;
     }
     else {
@@ -228,8 +249,6 @@ export class GameLogicService {
       createOpponentLicitationAlert(`Opponent chose tromf ${opponentPotentialTromf}`);
       await delay(1500);
     }
-    
-    console.log("tromf chosed");
   }
 
   async opponentTurnMove(userMoveOrNull: Nullable<String>) {
@@ -238,7 +257,7 @@ export class GameLogicService {
     let opponentMove = this.AI.bestMove(userMoveOrNull);
     this.removeSelectedCard(opponentMove.toString(), 'opponent-cards')
     moveOpponentCard(opponentMove); //frontend handler -> move card down
-    console.log("opponent moved ", opponentMove);
+    console.log("Opponent moved ", opponentMove);
     await delay(1500);
     return opponentMove;
   }
@@ -251,7 +270,7 @@ export class GameLogicService {
     const resolvedEvent = await Promise.race([timerHasExpired, userChoseCard]);
     stopTimer();
     
-    console.log("Resolved with " + resolvedEvent);
+    //console.log("Resolved with " + resolvedEvent);
     if (resolvedEvent == "Timer ended!") { //if user did not choose a card in the given time, a random card will be thrown on his behalf
       const userAllowedCards: String[] = this.AI.whatYouCanMove(downCardByOpponent, this.globalVars.yourCards);
       userChosenCard = userAllowedCards[Math.floor(Math.random() * userAllowedCards.length)];
@@ -270,6 +289,9 @@ export class GameLogicService {
   async handleRound() {
     let userChosenCard: String = "";
     let opponentChosenCard: String = "";
+
+    //hide any announcement tags from last round
+    hideAnnouncementTags();
 
     console.log("in handle round");
     console.log("USER TURN ", userTurn);
@@ -301,14 +323,20 @@ export class GameLogicService {
 
   async handleGamePlay() {
     let promiseChain = Promise.resolve();
-    const numberOfTotalRounds = 15;
+    const numberOfTotalRounds = 12;
 
     for(let i : number = 0; i < numberOfTotalRounds; i++) {
       promiseChain = promiseChain.then(async () => {
         let firstPlayerInRound = (userTurn == false) ? 1 : -1; 
         const [userChosenCard, opponentChosenCard] = await this.handleRound();
         const firstPlayerInNextRound = this.AI.checkRoundWinner(userChosenCard, opponentChosenCard, firstPlayerInRound)[0];
+        //update the scores
+        this.ScoreHandlingService.addSumToWinnerOfRound(firstPlayerInRound, firstPlayerInNextRound, userChosenCard.toString(), opponentChosenCard.toString());
+        console.log("USER SUM: ", this.globalVars.yourSum);
+        console.log("OPP SUM: ", this.globalVars.opponentSum);
+        //who starts next round
         userTurn = (firstPlayerInNextRound == 1) ? false : true;
+        
         //daca au mai ramas carti jos, roundWinner ia primul una si dupa urmatorul
         if(this.globalVars.deck.length > 0) {
           await this.pickCardsFromRemainingDeck(userTurn);
@@ -316,6 +344,7 @@ export class GameLogicService {
         if(this.globalVars.deck.length == 0) {
           hideRemainingCardsDeck();
         }
+
         await delay(1000);
         await fadeOut(); //2 cards down => disappear
       });
@@ -348,6 +377,37 @@ export class GameLogicService {
       await waitForUserToPickCard();
       hideCommentToPickCard();
       this.addCardForPlayer(this.globalVars.yourCards);
+    }
+  }
+
+  handleEndOfGame() {
+    console.log("Game ended!");
+    this.ScoreHandlingService.checkScoresAgainstLicitation();
+    
+    //check if any of the players reached total points of the game
+    if(this.globalVars.totalOpponentPoints >= this.GameConfig.gameTotalPoints || this.globalVars.totalUserPoints >= this.GameConfig.gameTotalPoints) {
+      replay = false;
+
+      if(this.globalVars.totalOpponentPoints > this.globalVars.totalUserPoints) {
+        showResultPopup("You lost :(");
+      }
+      else if(this.globalVars.totalOpponentPoints < this.globalVars.totalUserPoints) {
+        showResultPopup("You won :)");
+      }
+      else {
+        showResultPopup("It's a tie :/");
+      }
+
+        // Navigate back to the start page after displaying the result popup
+      setTimeout(function() {
+        let currentUrl = window.location.href;
+        var lastIndex = currentUrl.lastIndexOf("/");
+        var newHref = currentUrl.substring(0, lastIndex + 1) + "start";
+        window.location.href = newHref; // Replace with the desired start page URL
+      }, 3000); // Adjust the delay (in milliseconds) before navigating
+    }
+    else {
+      replay = true;
     }
   }
 
@@ -394,7 +454,7 @@ export class GameLogicService {
     if (timerContainer !== null) {
       timerContainer.style.display = "flex";
     }
-    return handleTimer(3);
+    return handleTimer(100);
   }
 
   async waitForCardChosenEvent(idCards:string) {
@@ -408,7 +468,7 @@ export class GameLogicService {
         }
         const clickedCard = event.target as HTMLImageElement;
         let cardName = clickedCard.src.split("/").pop()!;
-        console.log(cardName + " was clicked!");
+        //console.log(cardName + " was clicked!");
         cardName = cardName.split('.')[0];
         //remove the selected card from user's/opponent's hand
         this.removeSelectedCard(cardName, idCards);
@@ -419,10 +479,6 @@ export class GameLogicService {
         const card = cards[i];
         card.addEventListener('click', listener);
       }
-
-      setTimeout(() => {
-        reject("Timeout");
-      }, 5000); // reject after 5 seconds if the promise hasn't resolved yet
     });
   }
 

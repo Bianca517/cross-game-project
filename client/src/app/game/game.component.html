@@ -14,17 +14,30 @@
               <div class="table-container">
                 <table>
                   <thead>
-                    <tr>
+                    <tr class="table-row">
                       <th></th>
-                      <th id="text">Opponent</th>
-                      <th id="text">You</th>
+                      <th class="table-text">Current Points</th>
+                      <th class="table-text">Total Points</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td id="text">Total Points</td>
-                      <td id="points"></td>
-                      <td id="points"></td>
+                      <td class="table-text">Opponent</td>
+                      <td class="points" id="current-opponent-points">0</td>
+                      <td class="points" id="total-opponent-points">0</td>
+                      <td class="announcement-td">
+                        <div class="announcement-box arrow-left hidden" id="opponent-announcement" style = "height: 20px; width: 20px; margin-left: 0px">
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="table-text">You</td>
+                      <td class="points" id="current-user-points">0</td>
+                      <td class="points" id="total-user-points">0</td>
+                      <td class="announcement-td">
+                        <div class="announcement-box arrow-left hidden" id="user-announcement" style = "height: 20px; width: 20px; margin-left: 0px">
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -46,7 +59,7 @@
                 <div id="your-cards"></div>
             </div>
         </div>
-    
+
         <div id="licitation-popup-container">
             <div id="licitation-popup">
               <h2>Liciteaza:</h2>
@@ -89,6 +102,18 @@
               <div id="timer"></div>
             </div>
           </div>
-                 
+
+
+        <div id="resultContainer">
+          <div id="resultContainerContent" style="
+            opacity: 90%;
+            height: 100px;
+            width: 200px;
+            text-align: -webkit-center;
+            border-radius: 5px;">
+            <span id="resultContainerText" style="margin-top: 40px; font-size: 2em;"></span>
+          </div>
+        </div>
+          
     </body>
 </html>

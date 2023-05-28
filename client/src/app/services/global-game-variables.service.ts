@@ -10,4 +10,17 @@ export class GlobalGameVariablesService {
   opponentCards:string[] = [];
   yourCards:string[] = [];
   chosenTromf:string = "";
+  userLicitation:string = 'Pas';
+  opponentLicitation:string = 'Pas';
+  totalOpponentPoints:number = 0;
+  totalUserPoints:number = 0;
+  licitationThresholds: {[key: string]: number} = {
+    "Pas" : 0,
+    "1" : 33,
+    "2" : 66,
+    "3" : 99,
+    "4" : 132,
+    "5" : 165,
+    "6" : 198
+}
 }

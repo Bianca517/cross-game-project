@@ -7,7 +7,17 @@
     padding: 0;
 }
 
-button{
+.everything-container {
+    display: flex;
+}
+
+.main-div {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+#play-now-button{
     background-color: rgb(122, 6, 6);
     border-radius: 15px;
     position: absolute;
@@ -21,7 +31,7 @@ button{
     
 }
 
-button:hover {background-color: rgb(170, 15, 15)}
+#play-now-button:hover {background-color: rgb(170, 15, 15)}
 
 p.title{
     position: absolute;
@@ -121,3 +131,92 @@ img{
 .progressbar li.active + li:after {
     background-color: rgb(170, 15, 15);
 }
+
+/*------------------ SIDE PANNEL ------------------------*/
+.side-panel-toggle {
+    width: 140px;
+    height: 40px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    background: #2c5746;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    cursor: pointer;
+  }
+  
+.side-panel-toggle:hover {
+  background: #156337;
+}
+
+.sp-icon-close {
+    display: none !important;
+}
+
+.side-panel {
+    display: none;
+    width: 200px;
+    flex-shrink: 0;
+    padding: 20px;
+    color: #ffffff;
+    background: #2c5746;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+}
+
+.side-panel-open .side-panel {
+    display: initial;
+    animation: slideOpen 0.3s;
+    transition: width 0.3s;
+}
+
+@keyframes slideOpen {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+}
+
+
+/* -------------- CONFIGURATIONS -------------------*/
+.select-points {
+    background-color: #dbdad5;
+    height: max-content;
+    color:black;
+    padding: 10px;
+    margin-bottom: 30px
+}
+
+.side-panel-text {
+    font-family: 'Outfit';
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.point-options {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.point-options li {
+    display: block;
+    margin-right: 10px;
+    padding: 8px 12px;
+    border-radius: 2px;
+    background-color: #dbdad5;
+    color: black;
+    cursor: pointer;
+}
+
+.point-options li:hover {
+    background-color: #adadad;
+}
+
+.point-options li.selected {
+    background-color: #758a7e;
+}
+
