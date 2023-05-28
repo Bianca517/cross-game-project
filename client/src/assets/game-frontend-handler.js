@@ -74,11 +74,18 @@ function appendTimerElement() {
 
 function handleTimer(duration) {
   let timeLeft = duration;
+  const timerText = document.getElementById('timer');
+
+  timerText.style.color = "black";
+  timerText.style.fontSize = "2.5em";
+  timerText.style.position = "absolute";
+  timerText.style.left = "30%";
+  timerText.style.top = "41.3%";
 
   return new Promise((resolve) => {
     timerInterval = setInterval(() => {
       timeLeft--;
-      console.log(timeLeft);
+      timerText.textContent = timeLeft;
       if (timeLeft === 0) {
         clearInterval(timerInterval);
         resolve('Timer ended!');
@@ -89,7 +96,9 @@ function handleTimer(duration) {
 
 function stopTimer() {
   clearInterval(timerInterval);
-}  
+}
+
+
 /*
 function handleTimer(duration) {
     let timeLeft = duration;
