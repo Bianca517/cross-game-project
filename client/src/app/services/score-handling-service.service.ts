@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { GlobalGameVariablesService } from './global-game-variables.service';
+import { last } from 'rxjs';
 
 declare const updateRoundScoresInHTMLTable: any;
 declare const revealOpponentAnnouncement: any;
 declare const revealUserAnnouncement: any;
+declare const updateTotalScoresInHTMLTable: any;
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +81,38 @@ export class ScoreHandlingServiceService {
       }
     }
     return 0;
+  }
+
+  checkScoresAgainstLicitation() {
+    let opponentResult = this.checkScoresAgainstLicitationForEachPlayer(this.globalVars.opponentSum, this.globalVars.opponentLicitation);
+    let userResult = this.checkScoresAgainstLicitationForEachPlayer(this.globalVars.yourSum, this.globalVars.userLicitation);
+    this.globalVars.totalOpponentPoints += opponentResult;
+    this.globalVars.totalUserPoints += userResult;
+    updateTotalScoresInHTMLTable(this.globalVars.totalOpponentPoints, this.globalVars.totalUserPoints);
+  }
+
+  checkScoresAgainstLicitationForEachPlayer(playerSum: number, whatPlayerLicitated: string) {
+    let roundVerdict: number = 0;
+    //get player's threshold sum
+    let thresholdSum = this.globalVars.licitationThresholds[whatPlayerLicitated];
+    //if player did not fulfill licitation
+    if( thresholdSum > playerSum) {
+      roundVerdict = -1 * Number(whatPlayerLicitated)
+    }
+    else {
+      let lastSmallerValue: [string, number] = ['Pas', 0];
+      //find the greatest threshold lower than player sum
+      for (const [key, value] of Object.entries(this.globalVars.licitationThresholds)) {
+        if (value < playerSum) {
+          lastSmallerValue = [key, value];
+        }
+        else {
+          break;
+        }
+      }
+      roundVerdict = lastSmallerValue[1];
+    }
+    return roundVerdict;
   }
 
 }

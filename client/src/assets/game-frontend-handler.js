@@ -426,12 +426,19 @@ function waitForUserToPickCard() {
 }
 
 function updateRoundScoresInHTMLTable(opponentScore, userScore) {
-  console.log("intention to update");
   let currentOpponentPointsElement = document.getElementById("current-opponent-points");
   currentOpponentPointsElement.innerText = opponentScore;
 
   let currentUserPointsElement = document.getElementById("current-user-points");
   currentUserPointsElement.innerText = userScore;
+}
+
+function updateTotalScoresInHTMLTable(opponentScore, userScore) {
+  let totalOpponentPointsElement = document.getElementById("total-opponent-points");
+  totalOpponentPointsElement.innerText = opponentScore;
+
+  let totalUserPointsElement = document.getElementById("total-user-points");
+  totalUserPointsElement.innerText = userScore;
 } 
 
 function revealOpponentAnnouncement(announcement) {

@@ -25,19 +25,8 @@ declare const hideRemainingCardsDeck: any;
 declare const hideAnnouncementTags: any;
 
 let canRunTimer:boolean = false;
-let whatUserLicitated:string;
 let userTurn:boolean = true;
 let opponentPotentialTromf: string;
-
-const licitationThresholds: {[key: string]: number} = {
-    "Pas" : 0,
-    "1" : 33,
-    "2" : 66,
-    "3" : 99,
-    "4" : 132,
-    "5" : 165,
-    "6" : 198
-}
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +56,8 @@ export class GameLogicService {
       
       //after this, userTurn is set for the first round
       await this.handleGamePlay();
+
+      this.handleEndOfGame();
   }
 
   buildDeck() {
@@ -171,7 +162,7 @@ export class GameLogicService {
   }
 
   async userLicitation() {
-    whatUserLicitated = await handleLicitationPopUp();
+    this.globalVars.userLicitation = await handleLicitationPopUp();
 
     console.log("user licitation finished");
   }
@@ -179,7 +170,6 @@ export class GameLogicService {
   async opponentLicitation() {
     //presupunem ca ia toate mainile
     let sumWithAnunt = this.globalVars.opponentSum;
-    let whatOpponentLicitated = 'Pas';
     let opponentAnnouncements:string[] = [];
     //console.log("opponent sum without anunt" + sumWithAnunt);
 
@@ -205,20 +195,20 @@ export class GameLogicService {
 
     opponentPotentialTromf = this.AI.chooseTromf(opponentAnnouncements);
     //find the smallest licitation threshold
-    for (const [key, value] of Object.entries(licitationThresholds)) {
+    for (const [key, value] of Object.entries(this.globalVars.licitationThresholds)) {
         if (value < sumWithAnunt) {
-            whatOpponentLicitated = key;
+            this.globalVars.opponentLicitation = key;
         }
         else break;
     }
 
-    createOpponentLicitationAlert(`Opponent licitated ${whatOpponentLicitated}`);
+    createOpponentLicitationAlert(`Opponent licitated ${this.globalVars.opponentLicitation}`);
     await delay(1600);
 
     //reset opponent's sum
     this.globalVars.opponentSum = 0;
 
-    if(licitationThresholds[whatOpponentLicitated] < licitationThresholds[whatUserLicitated]) {
+    if(this.globalVars.licitationThresholds[this.globalVars.opponentLicitation] < this.globalVars.licitationThresholds[this.globalVars.userLicitation]) {
       userTurn = true;
     }
     else {
@@ -364,6 +354,11 @@ export class GameLogicService {
       hideCommentToPickCard();
       this.addCardForPlayer(this.globalVars.yourCards);
     }
+  }
+
+  handleEndOfGame() {
+    console.log("Game ended!");
+    this.ScoreHandlingService.checkScoresAgainstLicitation();
   }
 
   turnOffOrOnUserTurn(isUserTurn:boolean) {
