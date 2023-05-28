@@ -22,6 +22,7 @@ declare const revealCommentToPickCard: any;
 declare const hideCommentToPickCard: any;
 declare const waitForUserToPickCard: any;
 declare const hideRemainingCardsDeck: any;
+declare const hideAnnouncementTags: any;
 
 let canRunTimer:boolean = false;
 let whatUserLicitated:string;
@@ -274,6 +275,9 @@ export class GameLogicService {
   async handleRound() {
     let userChosenCard: String = "";
     let opponentChosenCard: String = "";
+
+    //hide any announcement tags from last round
+    hideAnnouncementTags();
 
     console.log("in handle round");
     console.log("USER TURN ", userTurn);

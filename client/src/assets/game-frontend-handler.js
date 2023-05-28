@@ -433,4 +433,27 @@ function updateRoundScoresInHTMLTable(opponentScore, userScore) {
   let currentUserPointsElement = document.getElementById("current-user-points");
   currentUserPointsElement.innerText = userScore;
 } 
+
+function revealOpponentAnnouncement(announcement) {
+  revealAnnouncement('opponent-announcement', announcement);
+}
+
+function revealUserAnnouncement(announcement) {
+  revealAnnouncement('user-announcement', announcement);
+}
+
+function revealAnnouncement(id, announcement) {
+  const announcementTag = document.getElementById(id);
+  announcementTag.innerText = announcement;
+  announcementTag.classList.remove('hidden');
+}
+
+function hideAnnouncementTags() {
+  let announcementTag = document.getElementById('opponent-announcement');
+  announcementTag.classList.add('hidden');
+
+  announcementTag = document.getElementById('user-announcement');
+  announcementTag.classList.add('hidden');
+}
+
 //module.exports = {createOpponentLicitationAlert, handleTimer, handleLicitationPopUp, clearPopUp, moveOpponentCards, moveUserCards}

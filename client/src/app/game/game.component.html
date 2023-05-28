@@ -14,22 +14,30 @@
               <div class="table-container">
                 <table>
                   <thead>
-                    <tr>
+                    <tr class="table-row">
                       <th></th>
-                      <th class="table-text">Opponent</th>
-                      <th class="table-text">You</th>
+                      <th class="table-text">Current Points</th>
+                      <th class="table-text">Total Points</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td class="table-text">Current Points</td>
+                      <td class="table-text">Opponent</td>
                       <td class="points" id="current-opponent-points">0</td>
-                      <td class="points" id="current-user-points">0</td>
+                      <td class="points" id="total-opponent-points">0</td>
+                      <td class="announcement-td">
+                        <div class="announcement-box arrow-left hidden" id="opponent-announcement" style = "height: 20px; width: 20px; margin-left: 0px">
+                        </div>
+                      </td>
                     </tr>
                     <tr>
-                      <td class="table-text">Total Points</td>
-                      <td class="points" id="total-opponent-points">0</td>
+                      <td class="table-text">You</td>
+                      <td class="points" id="current-user-points">0</td>
                       <td class="points" id="total-user-points">0</td>
+                      <td class="announcement-td">
+                        <div class="announcement-box arrow-left hidden" id="user-announcement" style = "height: 20px; width: 20px; margin-left: 0px">
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -51,7 +59,7 @@
                 <div id="your-cards"></div>
             </div>
         </div>
-    
+
         <div id="licitation-popup-container">
             <div id="licitation-popup">
               <h2>Liciteaza:</h2>
@@ -94,6 +102,6 @@
               <div id="timer"></div>
             </div>
           </div>
-                 
+          
     </body>
 </html>

@@ -321,6 +321,10 @@ th, td {
     font-size: small;
 }
 
+.table-row {
+    height: 43px;
+}
+
 th:first-child {
   border: none;
   background-color: transparent;
@@ -338,6 +342,32 @@ tbody td:first-child {
     background-color: rgb(160, 89, 89);
     color: #ffffff;
 }  
+
+.announcement-td {
+    border: none;
+    background-color: transparent;
+}
+
+.announcement-box {
+    width: 20px;
+    height: 20px;
+    background-color: rgb(160, 89, 89);
+    color: black;
+    padding: 5px;
+    position: relative;
+    float: left;
+}
+
+.announcement-box.arrow-left:after {
+    content: " ";
+    position: absolute;
+    left: -10px;
+    top: 4px;
+    border-top: 10px solid transparent;
+    border-right: 15px solid  rgb(160, 89, 89);
+    border-left: none;
+    border-bottom: 15px solid transparent;
+}
 
 /***** CARDS ANIMATION *****/
 #centeredDownCardOpponent {

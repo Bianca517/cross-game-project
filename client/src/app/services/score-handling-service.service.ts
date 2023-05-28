@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { GlobalGameVariablesService } from './global-game-variables.service';
 
 declare const updateRoundScoresInHTMLTable: any;
+declare const revealOpponentAnnouncement: any;
+declare const revealUserAnnouncement: any;
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +28,18 @@ export class ScoreHandlingServiceService {
     let sumOfDownCards: number = this.getCardValue(userChosenCard) + this.getCardValue(opponentChosenCard);
     //check for announcement for the first player in round
     if(roundStarter == 1) {
-      this.globalVars.opponentSum += this.checkIfOpponentAnnounced(opponentChosenCard);
+      let opponentAnnouncement = this.checkIfOpponentAnnounced(opponentChosenCard);
+      if(0 != opponentAnnouncement) {
+        this.globalVars.opponentSum += opponentAnnouncement;
+        revealOpponentAnnouncement("+" + opponentAnnouncement.toString());
+      }
     }
     else {
-      this.globalVars.yourSum += this.checkIfUserAnnounced(userChosenCard);
+      let userAnnouncement = this.checkIfUserAnnounced(userChosenCard);
+      if(0 != userAnnouncement) {
+        this.globalVars.yourSum += userAnnouncement;
+        revealUserAnnouncement("+" + userAnnouncement.toString());
+      }
     }
     
     //opponent won round
@@ -42,6 +52,7 @@ export class ScoreHandlingServiceService {
     }
 
     updateRoundScoresInHTMLTable(this.globalVars.opponentSum, this.globalVars.yourSum);
+
   }
 
   checkIfOpponentAnnounced(opponentDownCard: string): number {
