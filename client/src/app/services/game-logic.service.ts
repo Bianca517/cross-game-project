@@ -398,6 +398,14 @@ export class GameLogicService {
       else {
         showResultPopup("It's a tie :/");
       }
+
+        // Navigate back to the start page after displaying the result popup
+      setTimeout(function() {
+        let currentUrl = window.location.href;
+        var lastIndex = currentUrl.lastIndexOf("/");
+        var newHref = currentUrl.substring(0, lastIndex + 1) + "start";
+        window.location.href = newHref; // Replace with the desired start page URL
+      }, 3000); // Adjust the delay (in milliseconds) before navigating
     }
     else {
       replay = true;
