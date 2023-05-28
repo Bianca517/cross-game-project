@@ -51,6 +51,7 @@ export class GameLogicService {
     this.globalVars.opponentSum = 0;
     this.globalVars.userLicitation = "";
     this.globalVars.opponentLicitation = "";
+    //some comment
   }
 
   async startGame() {
