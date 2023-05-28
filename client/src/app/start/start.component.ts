@@ -21,6 +21,24 @@ export class StartComponent {
     });
   }
 
+  selectGameMode(target: EventTarget | null): void {
+    if (target instanceof HTMLElement) {
+      const option1 = document.getElementById('easy');
+      const option2 = document.getElementById('medium');
+      const option3 = document.getElementById('hard');
+      let options = [option1, option2, option3];
+
+      for (let option of options) {
+        option?.classList.remove("selected");
+      }
+      target.classList.add("selected");
+
+      let gameMode = target.textContent;
+      this.gameConfigDetails.gameMode = String(gameMode);
+      //console.log(this.gameConfigDetails.gameMode);
+    }
+  }
+
   selectOption(target: EventTarget | null): void {
     if (target instanceof HTMLElement) {
       const option1 = document.getElementById('7p');
