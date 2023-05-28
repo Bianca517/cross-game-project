@@ -54,7 +54,6 @@ export class GameLogicService {
   }
 
   async startGame() {
-    this.GameConfig.gameTotalPoints = 0;
     console.log("GTT ", this.GameConfig.gameTotalPoints);
     this.initVariables();
     while(replay == true) {
@@ -324,7 +323,7 @@ export class GameLogicService {
 
   async handleGamePlay() {
     let promiseChain = Promise.resolve();
-    const numberOfTotalRounds = 1;
+    const numberOfTotalRounds = 12;
 
     for(let i : number = 0; i < numberOfTotalRounds; i++) {
       promiseChain = promiseChain.then(async () => {
