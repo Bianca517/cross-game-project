@@ -322,6 +322,7 @@ function moveUserCard(card) {
       cardImage.style.transform = 'translate(-55%, -60%)';
       cardImage.style.transition = 'all 0.5s linear';
       cardImage.style.opacity = '1';
+      cardImage.style.pointerEvents = "none"; /* Disable click and hover events */
     }, 10);
 }
 
