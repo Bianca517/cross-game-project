@@ -303,8 +303,9 @@ table {
     width: 15%;
 }
 
-#points {
-    font-size: 2em;
+.points {
+    font-size: medium;
+    color: black;
 }
   
 th, td {
@@ -314,8 +315,10 @@ th, td {
     padding: 10px 10px;
 }
 
-#text {
+.table-text {
     text-align: center;
+    font-weight: bold;
+    font-size: small;
 }
 
 th:first-child {

@@ -254,7 +254,7 @@ function moveOpponentCards() {
 function moveOpponentCard(card) {
     // Get the image element
     const cardImage = document.querySelector(`#opponent-cards img[alt="${card}"]`);
-    console.log('Moving ' + card);
+    //console.log('Moving ' + card);
 
     // Change the position of the image to the center of the screen ONCE IT IS LOADED
     cardImage.style.position = 'absolute';
@@ -298,7 +298,7 @@ function moveUserCard(card) {
   //this function gets called when user did not chose a card in time
   // Get the image element
   const cardImage = document.querySelector(`#your-cards img[alt="${card}"]`);
-  console.log('Moving ' + card);
+  //console.log('Moving ' + card);
   // Create a wrapper div
   const wrapperDiv = document.createElement('div');
   wrapperDiv.id = "wrapperDiv";
@@ -388,7 +388,7 @@ function revealCommentToPickCard() {
   const commentBox = document.querySelector('.comment-box');
   commentBox.classList.remove('hidden');
 
-  console.log("APARE INDICATOR");
+  //console.log("APARE INDICATOR");
 
   //make card deck clickable
   const cardDeck = document.getElementById('remaining-card-deck');
@@ -400,7 +400,7 @@ function hideCommentToPickCard() {
   const commentBox = document.querySelector('.comment-box');
   commentBox.classList.add('hidden');
 
-  console.log("DISPARE INDICATOR");
+  //console.log("DISPARE INDICATOR");
 
   //make card deck unclickable
   const cardDeck = document.getElementById('remaining-card-deck');
@@ -424,4 +424,13 @@ function waitForUserToPickCard() {
     remainingCardDeck.addEventListener("click", clickHandler);
   });
 }
+
+function updateRoundScoresInHTMLTable(opponentScore, userScore) {
+  console.log("intention to update");
+  let currentOpponentPointsElement = document.getElementById("current-opponent-points");
+  currentOpponentPointsElement.innerText = opponentScore;
+
+  let currentUserPointsElement = document.getElementById("current-user-points");
+  currentUserPointsElement.innerText = userScore;
+} 
 //module.exports = {createOpponentLicitationAlert, handleTimer, handleLicitationPopUp, clearPopUp, moveOpponentCards, moveUserCards}
