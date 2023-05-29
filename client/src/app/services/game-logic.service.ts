@@ -53,6 +53,7 @@ export class GameLogicService {
     this.globalVars.opponentSum = 0;
     this.globalVars.userLicitation = "";
     this.globalVars.opponentLicitation = "";
+    this.globalVars.firstRoundPassed = false;
   }
 
   async startGame() {
@@ -231,7 +232,7 @@ export class GameLogicService {
         else break;
     }
 
-    createOpponentLicitationAlert("Opponent licitated" + this.globalVars.opponentLicitation);
+    createOpponentLicitationAlert("Opponent licitated " + this.globalVars.opponentLicitation);
     await delay(1600);
 
     //reset opponent's sum
@@ -251,9 +252,11 @@ export class GameLogicService {
       this.globalVars.chosenTromf = await handleTromfPopUp();
     }
     else {
-      createOpponentLicitationAlert(`Opponent chose tromf ${opponentPotentialTromf}`);
+      createOpponentLicitationAlert('Opponent chose tromf ' + opponentPotentialTromf);
+      this.globalVars.chosenTromf = opponentPotentialTromf;
       await delay(1500);
     }
+    console.log("chosen tromf: ", this.globalVars.chosenTromf);
   }
 
   async opponentTurnMove(userMoveOrNull: Nullable<String>) {
@@ -321,6 +324,10 @@ export class GameLogicService {
       //let user move
       this.turnOffOrOnUserTurn(userTurn);
       userChosenCard = await this.userTurnMove(opponentChosenCard);
+    }
+
+    if(this.globalVars.firstRoundPassed == false) {
+      this.globalVars.firstRoundPassed = true;
     }
 
     return Promise.resolve([userChosenCard, opponentChosenCard]);
