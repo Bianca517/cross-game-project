@@ -49,6 +49,7 @@ export class OpponentAiMoveService {
       return second[1] - first[1];
     });
 
+
     let potentialTromf:string = '';
     //daca nu are anunt deloc => cartea cu suma cea mai mare e tromf
     if(opponentAnnouncements.length == 0) {
@@ -184,21 +185,43 @@ export class OpponentAiMoveService {
 
   whatYouCanMove(downCard: Nullable<String>, cards: String[]) {
     let newCards:string[] = [];
-    if (downCard == null) {
-      return cards;
-    } 
-    else {
-      // to match the color
+    if(this.globalVars.firstRoundPassed == false) {
+      //if this is first round => you can only move tromfs
       for (let card of cards) {
-        if (this.getCardColor(card) == this.getCardColor(downCard)) { // if the color matches
+        if (this.getCardColor(card) == this.globalVars.chosenTromf) {
             newCards.push(card.toString());
         }
       }
-      // if no card of that color is present, move anything
-      if (newCards.length ===  0) {
+      if (newCards.length == 0) {
         return cards;
       }
-      return newCards;
+      else {
+        return newCards;
+      }
+    }
+    //other round than the first
+    else {
+      if(this.globalVars.deck.length > 0) {
+        return cards; //it is not necesary to move by color when there are remaining cards in the deck
+      }
+      else {
+        if (downCard == null) {
+          return cards;
+        } 
+        else {
+          // to match the color
+          for (let card of cards) {
+            if (this.getCardColor(card) == this.getCardColor(downCard)) { // if the color matches
+                newCards.push(card.toString());
+            }
+          }
+          // if no card of that color is present, move anything
+          if (newCards.length ===  0) {
+            return cards;
+          }
+          return newCards;
+        }
+      }
     }
   }
 

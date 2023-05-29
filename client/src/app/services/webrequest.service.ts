@@ -18,4 +18,13 @@ export class WebrequestService {
     console.log(`${this.ROOT_URL}/${uri}`);
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload, {observe: 'response'});
   }
+
+  getGamesWon(uri: string, email: string) {
+    return this.http.get(this.ROOT_URL + '/' + uri + '?email=' + email, {observe: 'response'});
+  }
+
+  updateGamesWon(uri: string, payload: Object) {
+    console.log("aici3");
+    return this.http.put(`${this.ROOT_URL}/${uri}`, payload, {observe: 'response'});
+  }
 }

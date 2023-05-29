@@ -2,6 +2,8 @@ import { ViewEncapsulation } from '@angular/core';
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { GameConfigurationService } from '../services/game-configuration.service';
+import { UserServiceService } from 'app/services/user-service.service';
+import { GamesWonService } from 'app/services/games-won.service';
 
 @Component({
   selector: 'app-start',
@@ -11,7 +13,7 @@ import { GameConfigurationService } from '../services/game-configuration.service
 })
 export class StartComponent {
 
-  constructor(private gameConfigDetails: GameConfigurationService) {
+  constructor(private gameConfigDetails: GameConfigurationService, private userService: UserServiceService, private gamesWonService: GamesWonService) {
   }
 
   ngOnInit() {
@@ -19,6 +21,47 @@ export class StartComponent {
     sidePannel.addEventListener("click", () => {
       (document.querySelector(".everything-container") as HTMLElement).classList.toggle("side-panel-open");
     });
+
+    this.userService.userEmail = 'igor@abc.com';
+    
+    let nrGamesWon: number = 0;
+    this.gamesWonService.getNumberOfGamesWonByEmail(this.userService.userEmail).subscribe(
+      response => {
+        console.log('Response:', response);
+        nrGamesWon = response;
+        // Perform further operations with the gamesWon value
+      });
+    console.log("aici trb sa dea 10 ", nrGamesWon);
+
+    this.updateLevelBar(5);
+  }
+
+  updateLevelBar(userLevel:number) {
+    const lv1 = document.getElementById('lv-bar-item1');
+    const lv2 = document.getElementById('lv-bar-item2');
+    const lv3 = document.getElementById('lv-bar-item3');
+    const lv4 = document.getElementById('lv-bar-item4');
+
+    const level_bar = [lv1, lv2, lv3, lv4]
+    if(userLevel > 0) {
+      if(userLevel <= 4) {
+        let i;
+        for(i = 0; i < 4; i++) {
+          level_bar[i]?.classList.remove('active');
+        }
+        level_bar[userLevel]?.classList.add('active');
+      } 
+      else {
+        let i;
+        for(i = 0; i < 4; i++) {
+          if (level_bar[i] !== null) {
+            level_bar[i]!.innerText = (userLevel - 3 + i).toString();
+          }
+          level_bar[i]?.classList.remove('active');
+        }
+        lv4?.classList.add('active');
+      }
+    }
   }
 
   selectGameMode(target: EventTarget | null): void {

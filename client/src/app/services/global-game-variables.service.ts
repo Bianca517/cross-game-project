@@ -14,6 +14,7 @@ export class GlobalGameVariablesService {
   opponentLicitation:string = 'Pas';
   totalOpponentPoints:number = 0;
   totalUserPoints:number = 0;
+  firstRoundPassed: boolean = false;
   licitationThresholds: {[key: string]: number} = {
     "Pas" : 0,
     "1" : 33,

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { LoginService } from '../services/login.service';
 import { Router } from '@angular/router';
 import { ViewEncapsulation } from '@angular/core';
+import { UserServiceService } from 'app/services/user-service.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit{
   email: String ="";
   password: String ="";
 
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router, private userService: UserServiceService) {}
 
   alert:boolean=false;
   //true => showing
@@ -33,6 +34,8 @@ export class LoginComponent implements OnInit{
       email: this.email,
       password: this.password
     }
+
+    this.userService.userEmail = this.email.toString();
 
     return this.loginService.loginUser(userData)
     .subscribe((response: any) => {

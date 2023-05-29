@@ -4,6 +4,7 @@ import { GlobalGameVariablesService } from './global-game-variables.service';
 import { OpponentAiMoveService } from './opponent-ai-move.service';
 import { ScoreHandlingServiceService } from './score-handling-service.service';
 import { GameConfigurationService } from './game-configuration.service';
+import { GamesWonService } from './games-won.service';
 
 type Nullable<T> = T | null;
 
@@ -25,6 +26,8 @@ declare const waitForUserToPickCard: any;
 declare const hideRemainingCardsDeck: any;
 declare const hideAnnouncementTags: any;
 declare const showResultPopup: any;
+declare const revealRemainingCardsDeck: any;
+
 
 let canRunTimer:boolean = false;
 let userTurn:boolean = true;
@@ -39,7 +42,8 @@ export class GameLogicService {
   constructor(private globalVars: GlobalGameVariablesService, 
     private AI: OpponentAiMoveService, 
     private ScoreHandlingService: ScoreHandlingServiceService,
-    private GameConfig: GameConfigurationService
+    private GameConfig: GameConfigurationService,
+    private GamesWonService: GamesWonService
     ) { }
   
   
@@ -51,6 +55,7 @@ export class GameLogicService {
     this.globalVars.opponentSum = 0;
     this.globalVars.userLicitation = "";
     this.globalVars.opponentLicitation = "";
+    this.globalVars.firstRoundPassed = false;
   }
 
   async startGame() {
@@ -103,6 +108,8 @@ export class GameLogicService {
         this.globalVars.deck[i] = this.globalVars.deck[j];
         this.globalVars.deck[j] = temp;
     }
+
+    revealRemainingCardsDeck();
     //console.log(deck);
   }
 
@@ -123,8 +130,11 @@ export class GameLogicService {
     //display all starting cards
     //create image tag
     let cardImg = document.createElement("img");
-    //cardImg.src = "./assets/card-faces/back.jpg";
-    cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+    if(playerCards === this.globalVars.opponentCards) {
+      cardImg.src = "./assets/card-faces/back.jpg";
+    } else {
+      cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+    }
     cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
     document.getElementById(cardsId)?.append(cardImg);
 
@@ -195,6 +205,7 @@ export class GameLogicService {
     //presupunem ca ia toate mainile
     let sumWithAnunt = this.globalVars.opponentSum;
     let opponentAnnouncements:string[] = [];
+    this.globalVars.opponentLicitation = 'Pas';
     //console.log("opponent sum without anunt" + sumWithAnunt);
 
     console.log(this.globalVars.opponentCards);
@@ -220,13 +231,13 @@ export class GameLogicService {
     opponentPotentialTromf = this.AI.chooseTromf(opponentAnnouncements);
     //find the smallest licitation threshold
     for (const [key, value] of Object.entries(this.globalVars.licitationThresholds)) {
-        if (value < sumWithAnunt) {
+        if (value < sumWithAnunt && value > this.globalVars.licitationThresholds[this.globalVars.userLicitation]) {
             this.globalVars.opponentLicitation = key;
         }
         else break;
     }
 
-    createOpponentLicitationAlert(`Opponent licitated ${this.globalVars.opponentLicitation}`);
+    createOpponentLicitationAlert("Opponent licitated " + this.globalVars.opponentLicitation);
     await delay(1600);
 
     //reset opponent's sum
@@ -246,9 +257,11 @@ export class GameLogicService {
       this.globalVars.chosenTromf = await handleTromfPopUp();
     }
     else {
-      createOpponentLicitationAlert(`Opponent chose tromf ${opponentPotentialTromf}`);
+      createOpponentLicitationAlert('Opponent chose tromf ' + opponentPotentialTromf);
+      this.globalVars.chosenTromf = opponentPotentialTromf;
       await delay(1500);
     }
+    console.log("chosen tromf: ", this.globalVars.chosenTromf);
   }
 
   async opponentTurnMove(userMoveOrNull: Nullable<String>) {
@@ -316,6 +329,10 @@ export class GameLogicService {
       //let user move
       this.turnOffOrOnUserTurn(userTurn);
       userChosenCard = await this.userTurnMove(opponentChosenCard);
+    }
+
+    if(this.globalVars.firstRoundPassed == false) {
+      this.globalVars.firstRoundPassed = true;
     }
 
     return Promise.resolve([userChosenCard, opponentChosenCard]);
@@ -393,12 +410,15 @@ export class GameLogicService {
       }
       else if(this.globalVars.totalOpponentPoints < this.globalVars.totalUserPoints) {
         showResultPopup("You won :)");
+
+        //add 1 to the user's level
+        this.GamesWonService.incrementNumberOfGamesWonByEmail();
       }
       else {
         showResultPopup("It's a tie :/");
       }
 
-        // Navigate back to the start page after displaying the result popup
+      // Navigate back to the start page after displaying the result popup
       setTimeout(function() {
         let currentUrl = window.location.href;
         var lastIndex = currentUrl.lastIndexOf("/");
