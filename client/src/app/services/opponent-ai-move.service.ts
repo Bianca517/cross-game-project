@@ -199,22 +199,28 @@ export class OpponentAiMoveService {
         return newCards;
       }
     }
+    //other round than the first
     else {
-      if (downCard == null) {
-        return cards;
-      } 
+      if(this.globalVars.deck.length > 0) {
+        return cards; //it is not necesary to move by color when there are remaining cards in the deck
+      }
       else {
-        // to match the color
-        for (let card of cards) {
-          if (this.getCardColor(card) == this.getCardColor(downCard)) { // if the color matches
-              newCards.push(card.toString());
-          }
-        }
-        // if no card of that color is present, move anything
-        if (newCards.length ===  0) {
+        if (downCard == null) {
           return cards;
+        } 
+        else {
+          // to match the color
+          for (let card of cards) {
+            if (this.getCardColor(card) == this.getCardColor(downCard)) { // if the color matches
+                newCards.push(card.toString());
+            }
+          }
+          // if no card of that color is present, move anything
+          if (newCards.length ===  0) {
+            return cards;
+          }
+          return newCards;
         }
-        return newCards;
       }
     }
   }

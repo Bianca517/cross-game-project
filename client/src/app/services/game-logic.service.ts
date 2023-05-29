@@ -59,7 +59,6 @@ export class GameLogicService {
   }
 
   async startGame() {
-    this.GameConfig.gameTotalPoints = 0;
     console.log("GTT ", this.GameConfig.gameTotalPoints);
     this.initVariables();
     while(replay == true) {
@@ -131,8 +130,11 @@ export class GameLogicService {
     //display all starting cards
     //create image tag
     let cardImg = document.createElement("img");
-    //cardImg.src = "./assets/card-faces/back.jpg";
-    cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+    if(playerCards === this.globalVars.opponentCards) {
+      cardImg.src = "./assets/card-faces/back.jpg";
+    } else {
+      cardImg.src = "./assets/card-faces/" + currentCard + ".png";
+    }
     cardImg.alt = currentCard ?? "image"; // use the nullish coalescing operator to provide a default value
     document.getElementById(cardsId)?.append(cardImg);
 
@@ -338,7 +340,7 @@ export class GameLogicService {
 
   async handleGamePlay() {
     let promiseChain = Promise.resolve();
-    const numberOfTotalRounds = 1;
+    const numberOfTotalRounds = 12;
 
     for(let i : number = 0; i < numberOfTotalRounds; i++) {
       promiseChain = promiseChain.then(async () => {
