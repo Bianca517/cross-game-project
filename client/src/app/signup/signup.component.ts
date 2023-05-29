@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SignupService } from '../services/signup.service';
 import { ViewEncapsulation } from '@angular/core';
+//import { UserServiceService } from '../services/user-service.service';
 
 @Component({
   selector: 'app-signup',
@@ -38,6 +39,8 @@ export class SignupComponent implements OnInit {
       email: this.email,
       password: this.password
     }
+
+    //this.userService.setUserEmail(this.email.toString());
 
       return this.signupService.signUpUser(userData)
       .subscribe((response: any) => {

@@ -25,6 +25,8 @@ declare const waitForUserToPickCard: any;
 declare const hideRemainingCardsDeck: any;
 declare const hideAnnouncementTags: any;
 declare const showResultPopup: any;
+declare const revealRemainingCardsDeck: any;
+
 
 let canRunTimer:boolean = false;
 let userTurn:boolean = true;
@@ -103,6 +105,8 @@ export class GameLogicService {
         this.globalVars.deck[i] = this.globalVars.deck[j];
         this.globalVars.deck[j] = temp;
     }
+
+    revealRemainingCardsDeck();
     //console.log(deck);
   }
 
@@ -195,6 +199,7 @@ export class GameLogicService {
     //presupunem ca ia toate mainile
     let sumWithAnunt = this.globalVars.opponentSum;
     let opponentAnnouncements:string[] = [];
+    this.globalVars.opponentLicitation = 'Pas';
     //console.log("opponent sum without anunt" + sumWithAnunt);
 
     console.log(this.globalVars.opponentCards);
@@ -220,13 +225,13 @@ export class GameLogicService {
     opponentPotentialTromf = this.AI.chooseTromf(opponentAnnouncements);
     //find the smallest licitation threshold
     for (const [key, value] of Object.entries(this.globalVars.licitationThresholds)) {
-        if (value < sumWithAnunt) {
+        if (value < sumWithAnunt && value > this.globalVars.licitationThresholds[this.globalVars.userLicitation]) {
             this.globalVars.opponentLicitation = key;
         }
         else break;
     }
 
-    createOpponentLicitationAlert(`Opponent licitated ${this.globalVars.opponentLicitation}`);
+    createOpponentLicitationAlert("Opponent licitated" + this.globalVars.opponentLicitation);
     await delay(1600);
 
     //reset opponent's sum

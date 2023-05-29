@@ -2,6 +2,7 @@ import { ViewEncapsulation } from '@angular/core';
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { GameConfigurationService } from '../services/game-configuration.service';
+//import { UserServiceService } from 'app/services/user-service.service';
 
 @Component({
   selector: 'app-start',
@@ -19,6 +20,7 @@ export class StartComponent {
     sidePannel.addEventListener("click", () => {
       (document.querySelector(".everything-container") as HTMLElement).classList.toggle("side-panel-open");
     });
+    //onsole.log("fmm ", this.userService.getUserEmail());
   }
 
   selectGameMode(target: EventTarget | null): void {

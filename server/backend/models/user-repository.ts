@@ -3,6 +3,7 @@ import { User } from '../models/user';
 import db from '../util/database';
 
 export class UserRepository {
+
     static async saveUser(user: User): Promise<any> {
         const result = db.execute(
             'INSERT INTO users (firstName, lastName, email, password, gamesWon) VALUES (?, ?, ?, ?, ?)',
@@ -38,6 +39,7 @@ export class UserRepository {
         }
     }
 
+
     static async updateGamesWonOfUserByEmail(email: String, nrGamesWon: number): Promise<boolean> {
         try {
           // Execute the SQL query to update the user's gamesWon field
@@ -47,5 +49,6 @@ export class UserRepository {
             console.log("Could not update user's games won field in db!");
             return false;
         }
-      }
+    }
+      
 }

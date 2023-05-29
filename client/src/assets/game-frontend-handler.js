@@ -421,6 +421,11 @@ function hideRemainingCardsDeck() {
   cardDeck.classList.add('hidden');
 }
 
+function revealRemainingCardsDeck() {
+  const cardDeck = document.getElementById('remaining-card-deck');
+  cardDeck.classList.remove('hidden');
+}
+
 function waitForUserToPickCard() {
   return new Promise((resolve) => {
     const remainingCardDeck = document.getElementById("remaining-card-deck");
