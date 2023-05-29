@@ -6,8 +6,22 @@
     <body id="game_body">
         <div id="game-scene">
             <div id="opponent-div">
+
                 <h3>Opponent:</h3>
                 <div id="opponent-cards"></div>
+
+                <div id="timer-flex-container">
+                  <div id="timer-container">
+                    <div class="timer-container circle">
+                      <div class="dots ss_dots"></div>
+                      <svg>
+                        <circle cx="70" cy="70" r="70"></circle>
+                        <circle cx="70" cy="70" r="70" id="ss"></circle>
+                      </svg>
+                      <div id="timer"></div>
+                    </div>
+                  </div>
+                </div>
             </div>
 
             <div id="middle-div">
@@ -92,16 +106,7 @@
             </div>
           </div>
       </div>
-          <div id="timer-container">
-            <div class="timer-container circle">
-              <div class="dots ss_dots"></div>
-              <svg>
-                <circle cx="70" cy="70" r="70"></circle>
-                <circle cx="70" cy="70" r="70" id="ss"></circle>
-              </svg>
-              <div id="timer"></div>
-            </div>
-          </div>
+
 
         <div id="resultContainer">
           <div id="resultContainerContent" style="

@@ -30,6 +30,10 @@
     transition: all 0.5s linear;
 }
 
+#timer-flex-container {
+    top: 15px;
+}
+
 #middle-div div {
     flex-direction: row;
     height: 100px;
@@ -252,8 +256,7 @@
     position: relative;
     width: 150px;
     height: 150px;
-    top: 55%;
-    left: 90%;
+    left: 50%;
     justify-content: center;
     align-items: center;
 }
