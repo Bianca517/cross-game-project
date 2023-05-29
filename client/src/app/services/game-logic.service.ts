@@ -4,6 +4,7 @@ import { GlobalGameVariablesService } from './global-game-variables.service';
 import { OpponentAiMoveService } from './opponent-ai-move.service';
 import { ScoreHandlingServiceService } from './score-handling-service.service';
 import { GameConfigurationService } from './game-configuration.service';
+import { GamesWonService } from './games-won.service';
 
 type Nullable<T> = T | null;
 
@@ -41,7 +42,8 @@ export class GameLogicService {
   constructor(private globalVars: GlobalGameVariablesService, 
     private AI: OpponentAiMoveService, 
     private ScoreHandlingService: ScoreHandlingServiceService,
-    private GameConfig: GameConfigurationService
+    private GameConfig: GameConfigurationService,
+    private GamesWonService: GamesWonService
     ) { }
   
   
@@ -57,6 +59,7 @@ export class GameLogicService {
   }
 
   async startGame() {
+    this.GameConfig.gameTotalPoints = 0;
     console.log("GTT ", this.GameConfig.gameTotalPoints);
     this.initVariables();
     while(replay == true) {
@@ -335,7 +338,7 @@ export class GameLogicService {
 
   async handleGamePlay() {
     let promiseChain = Promise.resolve();
-    const numberOfTotalRounds = 12;
+    const numberOfTotalRounds = 1;
 
     for(let i : number = 0; i < numberOfTotalRounds; i++) {
       promiseChain = promiseChain.then(async () => {
@@ -405,12 +408,15 @@ export class GameLogicService {
       }
       else if(this.globalVars.totalOpponentPoints < this.globalVars.totalUserPoints) {
         showResultPopup("You won :)");
+
+        //add 1 to the user's level
+        this.GamesWonService.incrementNumberOfGamesWonByEmail();
       }
       else {
         showResultPopup("It's a tie :/");
       }
 
-        // Navigate back to the start page after displaying the result popup
+      // Navigate back to the start page after displaying the result popup
       setTimeout(function() {
         let currentUrl = window.location.href;
         var lastIndex = currentUrl.lastIndexOf("/");
