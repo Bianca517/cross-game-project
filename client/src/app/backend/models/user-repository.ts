@@ -23,4 +23,29 @@ export class UserRepository {
             return null;
         }
     }
+
+    static async getNrOfGamesWonByEmail(email: String): Promise<number | null> {
+        //need to use await for db operations, otherwise => undefined
+        const result = await db.execute('SELECT gamesWon FROM users WHERE email = ?', [email]);
+        const firstRow = result[0] as RowDataPacket[];
+
+        if (firstRow.length > 0) {
+            const gamesWon: number = firstRow[0].gamesWon;
+            return gamesWon;
+        }
+        else {
+            return null;
+        }
+    }
+
+    static async updateGamesWonOfUserByEmail(email: String, nrGamesWon: number): Promise<boolean> {
+        try {
+          // Execute the SQL query to update the user's gamesWon field
+          await db.execute('UPDATE users SET gamesWon = ? WHERE email = ?', [nrGamesWon, email]);
+          return true;
+        } catch (error) {
+            console.log("Could not update user's games won field in db!");
+            return false;
+        }
+      }
 }

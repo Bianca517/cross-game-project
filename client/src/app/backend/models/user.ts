@@ -1,7 +1,7 @@
 import db from '../util/database';
 
 export class User {
-  private _gamesWon: Number;
+  private _gamesWon: number;
 
   constructor(private _firstName: String, private _lastName: String, private _email: String, private _password: String) {
     this._firstName = _firstName;
@@ -41,5 +41,13 @@ export class User {
 
   public set password(password: String) {
     this._password = password;
+  }
+
+  public get nrGamesWon() : number {
+    return this._gamesWon;
+  }
+
+  public set nrGamesWon(gamesWon: number) {
+    this._gamesWon = gamesWon;
   }
 }

@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 
 import signUpRouter from "./routes/auth";
 import loginRouter from "./routes/login-router";
+import gamesWonRouter from "./routes/games-won-router"; 
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -39,6 +40,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use('/auth', signUpRouter);
 app.use('/', loginRouter);
+app.use('/', gamesWonRouter);
 
 if (errorController.get404) {
   app.use(errorController.get404);
