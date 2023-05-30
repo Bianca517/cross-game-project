@@ -90,7 +90,12 @@ export class OpponentAiMoveService {
 
     let allowedOpponentCards;
     if (downCard == null) {
-      allowedOpponentCards = this.globalVars.opponentCards; //opp moves first
+      if(this.globalVars.firstRoundPassed == true) {
+        allowedOpponentCards = this.globalVars.opponentCards; //opp moves first
+      }
+      else {
+        allowedOpponentCards = this.whatYouCanMove(null, this.globalVars.opponentCards);
+      }
     } else {
       allowedOpponentCards = this.whatYouCanMove(downCard, this.globalVars.opponentCards);
     }
@@ -186,6 +191,7 @@ export class OpponentAiMoveService {
   whatYouCanMove(downCard: Nullable<String>, cards: String[]) {
     let newCards:string[] = [];
     if(this.globalVars.firstRoundPassed == false) {
+      console.log("primarunda", this.globalVars.firstRoundPassed);
       //if this is first round => you can only move tromfs
       for (let card of cards) {
         if (this.getCardColor(card) == this.globalVars.chosenTromf) {

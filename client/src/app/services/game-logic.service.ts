@@ -73,11 +73,18 @@ export class GameLogicService {
       this.dealCards();
 
       //user licitation
-      await this.userLicitation();
-
-      //opponent licitation
-      await delay(1000);
-      await this.opponentLicitation();
+      if(userTurn === true) {
+        await this.userLicitation();
+        //opponent licitation
+        await delay(1000);
+        await this.opponentLicitation();
+      }
+      else {
+        await this.opponentLicitation();
+        //await delay(1000);
+        await this.userLicitation();
+      }
+      
 
       //the one who licitated more gets to choose the tromf
       await this.chooseTromf();
@@ -407,10 +414,11 @@ export class GameLogicService {
 
       if(this.globalVars.totalOpponentPoints > this.globalVars.totalUserPoints) {
         showResultPopup("You lost :(");
+        userTurn = false;
       }
       else if(this.globalVars.totalOpponentPoints < this.globalVars.totalUserPoints) {
         showResultPopup("You won :)");
-
+        userTurn = true;
         //add 1 to the user's level
         this.GamesWonService.incrementNumberOfGamesWonByEmail();
       }
@@ -474,7 +482,7 @@ export class GameLogicService {
     if (timerContainer !== null) {
       timerContainer.style.display = "flex";
     }
-    return handleTimer(100);
+    return handleTimer(30);
   }
 
   async waitForCardChosenEvent(idCards:string) {
