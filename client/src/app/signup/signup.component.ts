@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SignupService } from '../services/signup.service';
 import { ViewEncapsulation } from '@angular/core';
 import { UserServiceService } from '../services/user-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -16,10 +17,11 @@ export class SignupComponent implements OnInit {
   email: String = "";
   password: String = "";
 
-  constructor(private signupService: SignupService, private userService: UserServiceService) {
+  constructor(private signupService: SignupService, private userService: UserServiceService, private router: Router) {
 
   }
 
+  routing:boolean = false;
   alert_name:boolean=false;
   alert_usedemail:boolean=false;
   alert_invalidemail:boolean=false;
@@ -48,6 +50,9 @@ export class SignupComponent implements OnInit {
         console.log(response);
         this.alert_registered = true;
         this.isRegistered = true;
+        console.log(this.isRegistered);
+        this.routing = true;
+        this.router.navigate(['/start']);
       },
       err => { 
         if (err.status === 409) { //Email already used!
