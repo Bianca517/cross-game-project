@@ -67,15 +67,23 @@ img{
     width: 13%;
     margin-left: 8%;
     margin-top: 25%;
+    position: fixed;
 }
 
 .container {
     width: 100%;
+    position: fixed;
 }
 
-.progressbar{
+.progressbar {
     counter-reset: step;
+    position: fixed;
+    top: 80%;
+    left: 48.5%;
+    transform: translateX(-50%);
+    width: 200px;
 }
+
 .progressbar li {
     list-style-type: none;
     float: left;
@@ -83,8 +91,6 @@ img{
     position: relative;
     text-align: center;
     color: black;
-    left: 41%;
-    z-index: 1;
 }
 
 .progressbar li:before {
@@ -108,13 +114,13 @@ img{
     position: absolute;
     width: 50%;
     height: 3px;
-    background-color: white;;
+    background-color: white;
     top: 15px;
     left: -33%;
     z-index: 0;
 }
 
-.progressbar li:first-child:after{
+.progressbar li:first-child:after {
     content: none;
 }
 
