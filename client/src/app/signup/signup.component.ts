@@ -24,6 +24,7 @@ export class SignupComponent implements OnInit {
   alert_usedemail:boolean=false;
   alert_invalidemail:boolean=false;
   alert_registered:boolean = false;
+  isRegistered:boolean = false;
 
   ngOnInit(): void {
       
@@ -46,6 +47,7 @@ export class SignupComponent implements OnInit {
       .subscribe((response: any) => {
         console.log(response);
         this.alert_registered = true;
+        this.isRegistered = true;
       },
       err => { 
         if (err.status === 409) { //Email already used!

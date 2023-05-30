@@ -59,7 +59,7 @@
                         </div>
                         <br>
                         <br>
-                        <button type="button" class="btn btn-primary" (click)="signupUser()">Register</button>
+                        <button type="button" class="btn btn-primary" (click)="signupUser()" [routerLink]="isRegistered ? '/start' : null">Register</button>
                       </form>
                       <a routerLink="/login">Already registered? Click to Login!</a>
             </div>
